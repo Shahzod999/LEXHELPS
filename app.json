@@ -1,0 +1,63 @@
+{
+  "expo": {
+    "name": "rntodolistapp",
+    "slug": "rntodolistapp",
+    "version": "1.0.30",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "rntodolistapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cdlcarolinas.lex",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.cdlcarolinas.lex"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "submit": {
+      "production": {
+        "ios": {
+          "appleId": "yesdoni@icloud.com",
+          "ascAppId": "6747161585",
+          "appleTeamId": "3SZQ9MW3F4"
+        }
+      }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "890d9bd2-badc-41f2-b5ea-100f99d5d35b"
+      }
+    }
+  }
+}
