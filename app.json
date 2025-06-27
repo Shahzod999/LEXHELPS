@@ -12,7 +12,11 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.cdlcarolinas.lex",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "Это приложение использует ваше местоположение для предоставления актуальных новостей в вашем регионе.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Это приложение использует ваше местоположение для предоставления актуальных новостей в вашем регионе.",
+        "NSCameraUsageDescription": "Lex использует камеру для сканирования юридических документов, удостоверений личности и других важных бумаг. Ваши фотографии обрабатываются локально и используются только для анализа документов.",
+        "NSPhotoLibraryUsageDescription": "Lex использует доступ к галерее, чтобы вы могли выбрать и загрузить фотографии или документы из своего устройства."
       }
     },
     "android": {
@@ -21,7 +25,14 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.cdlcarolinas.lex"
+      "package": "com.cdlcarolinas.lex",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -34,12 +45,32 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Lex использует ваше местоположение, чтобы показывать новости и события в вашем регионе.",
+          "locationWhenInUsePermission": "Lex использует ваше местоположение только во время использования приложения, чтобы предоставлять персонализированные данные."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Lex использует камеру для сканирования юридических документов, удостоверений личности и других важных бумаг. Фото обрабатываются локально и не передаются на сервер."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Lex использует камеру для сканирования юридических документов, удостоверений личности и других важных бумаг.",
+          "photosPermission": "Доступ к фото нужен, чтобы вы могли загружать документы и изображения из вашей галереи."
+        }
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
