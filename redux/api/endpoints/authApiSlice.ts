@@ -1,12 +1,12 @@
-import { saveTokenToSecureStore } from "@/utils/secureStore";
-import { apiSlice } from "../apiSlice";
 import { setToken } from "@/redux/features/tokenSlice";
+import { setUser } from "@/redux/features/userSlice";
 import {
   LoginResponseType,
   ProfileResponseType,
   UpdateProfileType,
 } from "@/types/login";
-import { setUser } from "@/redux/features/userSlice";
+import { saveTokenToSecureStore } from "@/utils/secureStore";
+import { apiSlice } from "../apiSlice";
 
 interface LoginCredentials {
   email: string;
@@ -77,8 +77,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
     }),
 
     deleteProfile: builder.mutation({
-      query: (userId) => ({
-        url: `/users/${userId}`,
+      query: (profileId) => ({
+        url: `/users/${profileId}`,
         method: "DELETE",
       }),
     }),

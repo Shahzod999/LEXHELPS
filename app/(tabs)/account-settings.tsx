@@ -1,38 +1,45 @@
+import { Loading } from "@/components/common/LoadingScreen";
+import BottomModal from "@/components/Modal/BottomModal";
+import ThemedButton from "@/components/ThemedButton";
+import ThemedCard from "@/components/ThemedCard";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { apiSlice } from "@/redux/api/apiSlice";
+import { useDeleteProfileMutation, useUpdateProfileMutation } from "@/redux/api/endpoints/authApiSlice";
+import { useUploadImageMutation } from "@/redux/api/endpoints/uploadApi";
+import { clearToken } from "@/redux/features/tokenSlice";
+import { selectUser } from "@/redux/features/userSlice";
+import { removeTokenFromSecureStore } from "@/utils/secureStore";
+import { getValidatedUrl } from "@/utils/ValidateImg";
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  StyleSheet,
-  Platform,
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import ThemedScreen from "../../components/ThemedScreen";
 import { useTheme } from "../../context/ThemeContext";
 import { useToast } from "../../context/ToastContext";
-import { useUpdateProfileMutation } from "@/redux/api/endpoints/authApiSlice";
-import ThemedButton from "@/components/ThemedButton";
-import ThemedCard from "@/components/ThemedCard";
-import * as ImagePicker from "expo-image-picker";
-import { useEffect, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import BottomModal from "@/components/Modal/BottomModal";
-import { getValidatedUrl } from "@/utils/ValidateImg";
-import { useUploadImageMutation } from "@/redux/api/endpoints/uploadApi";
-import { Loading } from "@/components/common/LoadingScreen";
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { selectUser } from "@/redux/features/userSlice";
 
 export default function AccountSettings() {
+  const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const { showSuccess, showError } = useToast();
   const profile = useAppSelector(selectUser);
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+  const [deleteProfile, { isLoading: isDeleting }] = useDeleteProfileMutation();
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [formData, setFormData] = useState({
     name: profile?.name || "",
@@ -41,9 +48,7 @@ export default function AccountSettings() {
     phoneNumber: profile?.phoneNumber || "",
     nationality: profile?.nationality || "",
     language: profile?.language || "",
-    dateOfBirth: profile?.dateOfBirth
-      ? new Date(profile?.dateOfBirth)
-      : new Date(),
+    dateOfBirth: profile?.dateOfBirth ? new Date(profile?.dateOfBirth) : new Date(),
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -168,33 +173,38 @@ export default function AccountSettings() {
         phoneNumber: profile.phoneNumber,
         nationality: profile.nationality,
         language: profile.language,
-        dateOfBirth: profile.dateOfBirth
-          ? new Date(profile.dateOfBirth)
-          : new Date(),
+        dateOfBirth: profile.dateOfBirth ? new Date(profile.dateOfBirth) : new Date(),
         bio: profile.bio,
       }));
     }
   }, [profile]);
 
+  const handleDeleteAccount = async () => {
+    try {
+      const res = await deleteProfile(profile?._id).unwrap();
+      if (res.status == "success") {
+        await removeTokenFromSecureStore();
+        dispatch(clearToken());
+        router.replace("/login");
+        dispatch(apiSlice.util.resetApiState());
+        showSuccess("Аккаунт успешно удален");
+      } else {
+        showError(res.message);
+      }
+    } catch (error) {
+      showError("Ошибка при удалении аккаунта");
+    }
+  };
+
+  const totalLoading = isLoading || isDeleting || isUploading;
   return (
     <ThemedScreen>
-      {isLoading && <Loading />}
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      {totalLoading && <Loading />}
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <ThemedCard style={styles.profileCard}>
-            <TouchableOpacity
-              disabled={isUploading || isLoading}
-              onPress={handleImagePick}
-              style={styles.imageContainer}>
-              {(isUploading || isLoading) && (
-                <ActivityIndicator
-                  style={styles.loadingIndicator}
-                  color={colors.accent}
-                  size="large"
-                />
-              )}
+            <TouchableOpacity disabled={totalLoading} onPress={handleImagePick} style={styles.imageContainer}>
+              {totalLoading && <ActivityIndicator style={styles.loadingIndicator} color={colors.accent} size="large" />}
               {profile?.profilePicture ? (
                 <Image
                   source={{
@@ -203,58 +213,33 @@ export default function AccountSettings() {
                   style={styles.profileImage}
                 />
               ) : (
-                <View
-                  style={[
-                    styles.profileImage,
-                    { backgroundColor: colors.accent },
-                  ]}>
+                <View style={[styles.profileImage, { backgroundColor: colors.accent }]}>
                   <Ionicons name="person" size={40} color="white" />
                 </View>
               )}
-              <View
-                style={[
-                  styles.editIconContainer,
-                  { backgroundColor: colors.accent },
-                ]}>
+              <View style={[styles.editIconContainer, { backgroundColor: colors.accent }]}>
                 <Ionicons name="camera" size={20} color="white" />
               </View>
             </TouchableOpacity>
-            <Text style={[styles.name, { color: colors.text }]}>
-              {profile?.name}
-            </Text>
-            <Text style={[styles.email, { color: colors.hint }]}>
-              {profile?.email}
-            </Text>
+            <Text style={[styles.name, { color: colors.text }]}>{profile?.name}</Text>
+            <Text style={[styles.email, { color: colors.hint }]}>{profile?.email}</Text>
           </ThemedCard>
 
           <ThemedCard style={styles.infoCard}>
             <View style={styles.sectionHeader}>
-              <Ionicons
-                name="person-circle-outline"
-                size={24}
-                color={colors.accent}
-              />
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                Personal Information
-              </Text>
+              <Ionicons name="person-circle-outline" size={24} color={colors.accent} />
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Personal Information</Text>
             </View>
 
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="person-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>
-                  Full Name
-                </Text>
+                <Text style={[styles.label, { color: colors.hint }]}>Full Name</Text>
               </View>
               <TextInput
-                style={[
-                  styles.input,
-                  { backgroundColor: colors.card, color: colors.text },
-                ]}
+                style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.name}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, name: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, name: text }))}
                 placeholder="Enter your full name"
                 placeholderTextColor={colors.hint}
               />
@@ -263,19 +248,12 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="mail-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>
-                  Email
-                </Text>
+                <Text style={[styles.label, { color: colors.hint }]}>Email</Text>
               </View>
               <TextInput
-                style={[
-                  styles.input,
-                  { backgroundColor: colors.card, color: colors.text },
-                ]}
+                style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.email}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, email: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, email: text }))}
                 placeholder="Enter your email"
                 placeholderTextColor={colors.hint}
                 keyboardType="email-address"
@@ -286,19 +264,12 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="call-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>
-                  Phone Number
-                </Text>
+                <Text style={[styles.label, { color: colors.hint }]}>Phone Number</Text>
               </View>
               <TextInput
-                style={[
-                  styles.input,
-                  { backgroundColor: colors.card, color: colors.text },
-                ]}
+                style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.phoneNumber}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, phoneNumber: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, phoneNumber: text }))}
                 placeholder="Enter your phone number"
                 placeholderTextColor={colors.hint}
                 keyboardType="phone-pad"
@@ -308,19 +279,12 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="globe-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>
-                  Nationality
-                </Text>
+                <Text style={[styles.label, { color: colors.hint }]}>Nationality</Text>
               </View>
               <TextInput
-                style={[
-                  styles.input,
-                  { backgroundColor: colors.card, color: colors.text },
-                ]}
+                style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.nationality}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, nationality: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, nationality: text }))}
                 placeholder="Enter your nationality"
                 placeholderTextColor={colors.hint}
               />
@@ -328,36 +292,21 @@ export default function AccountSettings() {
 
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
-                <Ionicons
-                  name="calendar-outline"
-                  size={20}
-                  color={colors.hint}
-                />
-                <Text style={[styles.label, { color: colors.hint }]}>
-                  Date of Birth
-                </Text>
+                <Ionicons name="calendar-outline" size={20} color={colors.hint} />
+                <Text style={[styles.label, { color: colors.hint }]}>Date of Birth</Text>
               </View>
               <TouchableOpacity
-                style={[
-                  styles.input,
-                  styles.dateInput,
-                  { backgroundColor: colors.card },
-                ]}
+                style={[styles.input, styles.dateInput, { backgroundColor: colors.card }]}
                 onPress={() => {
                   setTempDate(formData.dateOfBirth);
                   setShowDatePicker(true);
-                }}>
-                <Text style={{ color: colors.text }}>
-                  {formData.dateOfBirth.toLocaleDateString()}
-                </Text>
+                }}
+              >
+                <Text style={{ color: colors.text }}>{formData.dateOfBirth.toLocaleDateString()}</Text>
               </TouchableOpacity>
 
               {Platform.OS === "ios" ? (
-                <BottomModal
-                  visible={showDatePicker}
-                  onClose={() => setShowDatePicker(false)}
-                  onConfirm={handleConfirmDate}
-                  title="Select Date">
+                <BottomModal visible={showDatePicker} onClose={() => setShowDatePicker(false)} onConfirm={handleConfirmDate} title="Select Date">
                   <DateTimePicker
                     value={tempDate}
                     mode="date"
@@ -369,38 +318,20 @@ export default function AccountSettings() {
                 </BottomModal>
               ) : (
                 showDatePicker && (
-                  <DateTimePicker
-                    value={formData.dateOfBirth}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChange}
-                    maximumDate={new Date()}
-                  />
+                  <DateTimePicker value={formData.dateOfBirth} mode="date" display="default" onChange={handleDateChange} maximumDate={new Date()} />
                 )
               )}
             </View>
 
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
-                <Ionicons
-                  name="chatbubble-outline"
-                  size={20}
-                  color={colors.hint}
-                />
-                <Text style={[styles.label, { color: colors.hint }]}>
-                  About Me
-                </Text>
+                <Ionicons name="chatbubble-outline" size={20} color={colors.hint} />
+                <Text style={[styles.label, { color: colors.hint }]}>About Me</Text>
               </View>
               <TextInput
-                style={[
-                  styles.input,
-                  styles.bioInput,
-                  { backgroundColor: colors.card, color: colors.text },
-                ]}
+                style={[styles.input, styles.bioInput, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.bio}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, bio: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, bio: text }))}
                 placeholder="Tell us about yourself"
                 placeholderTextColor={colors.hint}
                 multiline
@@ -409,41 +340,23 @@ export default function AccountSettings() {
               />
             </View>
 
-            <ThemedButton
-              title="Save Changes"
-              onPress={handleSubmit}
-              loading={isLoading}
-              style={styles.button}
-              icon="save-outline"
-            />
+            <ThemedButton title="Save Changes" onPress={handleSubmit} loading={isLoading} style={styles.button} icon="save-outline" />
           </ThemedCard>
 
           <ThemedCard style={styles.infoCard}>
             <View style={styles.sectionHeader}>
-              <Ionicons
-                name="lock-closed-outline"
-                size={24}
-                color={colors.accent}
-              />
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                Change Password
-              </Text>
+              <Ionicons name="lock-closed-outline" size={24} color={colors.accent} />
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Change Password</Text>
             </View>
 
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="key-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>
-                  Current Password
-                </Text>
+                <Text style={[styles.label, { color: colors.hint }]}>Current Password</Text>
               </View>
               <View style={styles.passwordContainer}>
                 <TextInput
-                  style={[
-                    styles.input,
-                    styles.passwordInput,
-                    { backgroundColor: colors.card, color: colors.text },
-                  ]}
+                  style={[styles.input, styles.passwordInput, { backgroundColor: colors.card, color: colors.text }]}
                   value={passwordData.oldPassword}
                   onChangeText={(text) =>
                     setPasswordData((prev) => ({
@@ -455,14 +368,8 @@ export default function AccountSettings() {
                   placeholderTextColor={colors.hint}
                   secureTextEntry={!showPassword}
                 />
-                <TouchableOpacity
-                  style={styles.eyeIcon}
-                  onPress={() => setShowPassword(!showPassword)}>
-                  <Ionicons
-                    name={showPassword ? "eye-off" : "eye"}
-                    size={24}
-                    color={colors.text}
-                  />
+                <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
+                  <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color={colors.text} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -470,21 +377,13 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="key-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>
-                  New Password
-                </Text>
+                <Text style={[styles.label, { color: colors.hint }]}>New Password</Text>
               </View>
               <View style={styles.passwordContainer}>
                 <TextInput
-                  style={[
-                    styles.input,
-                    styles.passwordInput,
-                    { backgroundColor: colors.card, color: colors.text },
-                  ]}
+                  style={[styles.input, styles.passwordInput, { backgroundColor: colors.card, color: colors.text }]}
                   value={passwordData.password}
-                  onChangeText={(text) =>
-                    setPasswordData((prev) => ({ ...prev, password: text }))
-                  }
+                  onChangeText={(text) => setPasswordData((prev) => ({ ...prev, password: text }))}
                   placeholder="Enter new password"
                   placeholderTextColor={colors.hint}
                   secureTextEntry={!showPassword}
@@ -492,16 +391,38 @@ export default function AccountSettings() {
               </View>
             </View>
 
-            <ThemedButton
-              title="Change Password"
-              onPress={handlePasswordChange}
-              loading={isLoading}
-              style={styles.button}
-              icon="key-outline"
-            />
+            <ThemedButton title="Change Password" onPress={handlePasswordChange} loading={totalLoading} style={styles.button} icon="key-outline" />
           </ThemedCard>
+
+          <ThemedButton
+            title="Delete Account"
+            onPress={() => setShowDeleteModal(true)}
+            loading={totalLoading}
+            style={styles.deleteButton}
+            icon="trash-outline"
+            variant="danger"
+          />
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <BottomModal
+        visible={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={() => setShowDeleteModal(false)}
+        title="Delete Account"
+      >
+        <View style={styles.deleteModal}>
+          <Text style={[styles.deleteModalTitle, { color: colors.text }]}>Are you sure you want to delete your account?</Text>
+        </View>
+        <ThemedButton
+          title="Delete"
+          onPress={handleDeleteAccount}
+          loading={totalLoading}
+          style={styles.button}
+          icon="trash-outline"
+          variant="danger"
+        />
+      </BottomModal>
     </ThemedScreen>
   );
 }
@@ -609,5 +530,19 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 15,
     top: 13,
+  },
+  deleteButton: {
+    marginVertical: 20,
+  },
+  deleteModal: {
+    padding: 20,
+  },
+  deleteModalTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  deleteModalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

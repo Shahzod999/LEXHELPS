@@ -1,13 +1,6 @@
-import React from "react";
-import {
-  Modal,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  TouchableWithoutFeedback,
-} from "react-native";
 import { useTheme } from "@/context/ThemeContext";
+import React from "react";
+import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
 interface BottomModalProps {
   visible: boolean;
@@ -20,48 +13,23 @@ interface BottomModalProps {
   height?: number | string;
 }
 
-const BottomModal: React.FC<BottomModalProps> = ({
-  visible,
-  onClose,
-  onConfirm,
-  title,
-  confirmText = "Done",
-  cancelText = "Cancel",
-  children,
-}) => {
+const BottomModal: React.FC<BottomModalProps> = ({ visible, onClose, onConfirm, title, confirmText = "Done", cancelText = "Cancel", children }) => {
   const { colors } = useTheme();
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.modalContainer}>
           <TouchableWithoutFeedback>
-            <View
-              style={[
-                styles.modalContent,
-                { backgroundColor: colors.darkBackground },
-              ]}>
+            <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
               <View style={styles.modalHeader}>
                 <TouchableOpacity onPress={onClose}>
-                  <Text style={[styles.modalButton, { color: colors.hint }]}>
-                    {cancelText}
-                  </Text>
+                  <Text style={[styles.modalButton, { color: colors.hint }]}>{cancelText}</Text>
                 </TouchableOpacity>
-                {title && (
-                  <Text style={[styles.modalTitle, { color: colors.text }]}>
-                    {title}
-                  </Text>
-                )}
+                {title && <Text style={[styles.modalTitle, { color: colors.text }]}>{title}</Text>}
                 {onConfirm && (
                   <TouchableOpacity onPress={onConfirm}>
-                    <Text
-                      style={[styles.modalButton, { color: colors.accent }]}>
-                      {confirmText}
-                    </Text>
+                    <Text style={[styles.modalButton, { color: colors.accent }]}>{confirmText}</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -83,14 +51,16 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 20,
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.05)",
   },
   modalHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(0, 0, 0, 0.1)",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "rgba(0, 0, 0, 0.05)",
   },
   modalTitle: {
     fontSize: 16,

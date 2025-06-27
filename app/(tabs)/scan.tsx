@@ -1,31 +1,31 @@
+import CameraView from "@/components/Camera/CameraView";
+import Header from "@/components/Card/Header";
+import HomeCard from "@/components/Card/HomeCard";
+import { Loading } from "@/components/common/LoadingScreen";
+import ToggleTabsRN from "@/components/ToggleTabs/ToggleTabsRN";
+import { useChat, useChatById } from "@/context/ChatContext";
+import { useTheme } from "@/context/ThemeContext";
+import { useAppSelector } from "@/hooks/reduxHooks";
+import { useDeleteDocumentMutation, useUploadDocumentMutation } from "@/redux/api/endpoints/documentApiSlice";
+import { selectToken } from "@/redux/features/tokenSlice";
+import { Ionicons } from "@expo/vector-icons";
+import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
+import React, { useEffect, useMemo, useState } from "react";
 import {
+  Alert,
   Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
-  TouchableOpacity,
+  Pressable,
   SafeAreaView,
-  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import Header from "@/components/Card/Header";
-import ToggleTabsRN from "@/components/ToggleTabs/ToggleTabsRN";
-import HomeCard from "@/components/Card/HomeCard";
-import { useTheme } from "@/context/ThemeContext";
-import { useChat, useChatById } from "@/context/ChatContext";
-import { Ionicons } from "@expo/vector-icons";
-import CameraView from "@/components/Camera/CameraView";
-import * as ImagePicker from "expo-image-picker";
-import * as DocumentPicker from "expo-document-picker";
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { selectToken } from "@/redux/features/tokenSlice";
-import { useDeleteDocumentMutation, useUploadDocumentMutation } from "@/redux/api/endpoints/documentApiSlice";
-import { Loading } from "@/components/common/LoadingScreen";
 
 // Document interface
 interface ScannedDocument {
@@ -55,12 +55,10 @@ const ScanScreen = () => {
   const [uploadProgress, setUploadProgress] = useState<string>("");
   const [documentChatId, setDocumentChatId] = useState<string>("");
 
-  console.log(documentChatId, "documentChatId");
-
   const [uploadDocument, { isLoading: isUploading }] = useUploadDocumentMutation();
   const [deleteDocument, { isLoading: isDeleting }] = useDeleteDocumentMutation();
 
-  const { isConnecting, isConnected } = useChat();
+  const { isConnected } = useChat();
   const documentChat = useChatById(documentChatId || "");
 
   useEffect(() => {
@@ -460,9 +458,7 @@ const ScanScreen = () => {
                     },
                   ]}
                 />
-                <Text style={[styles.statusText, { color: colors.text }]}>
-                  {getConnectionStatus()}
-                </Text>
+                <Text style={[styles.statusText, { color: colors.text }]}>{getConnectionStatus()}</Text>
               </View>
             )}
 

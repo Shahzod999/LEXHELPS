@@ -1,16 +1,16 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { 
-  TouchableOpacity, 
-  Text, 
-  StyleSheet, 
-  ViewStyle, 
-  TextStyle, 
-  ActivityIndicator 
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
-import { Ionicons } from '@expo/vector-icons';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 
 type ThemedButtonProps = {
   title: string;
@@ -59,6 +59,11 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
         return {
           backgroundColor: 'transparent',
           borderColor: 'transparent',
+        };
+      case 'danger':
+        return {
+          backgroundColor: colors.error,
+          borderColor: colors.error,
         };
       default:
         return {

@@ -1,3 +1,4 @@
+import { useTheme } from "@/context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { CameraType, CameraView, FlashMode, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
@@ -12,7 +13,7 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState<CameraType>("back");
   const [flash, setFlash] = useState<FlashMode>("off");
-
+  const { colors } = useTheme();
   // Reference to the camera component to call takePictureAsync
   const cameraRef = useRef<CameraView>(null);
 
@@ -68,7 +69,7 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
   if (!permission) {
     // Camera permissions are still loading
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={styles.text}>Loading camera permissions...</Text>
       </View>
     );
@@ -77,17 +78,28 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
   if (!permission.granted) {
     // Camera permissions are not granted yet
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>We need your permission to show the camera</Text>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Text style={[styles.text, { color: colors.text }]}>Разрешение на использование камеры</Text>
+        <Text style={[styles.descriptionText, { color: colors.text }]}>
+          Lex использует камеру для сканирования юридических документов, удостоверений личности и других важных бумаг.
+          {"\n\n"}
+          Ваши фотографии:
+          {"\n"}• Обрабатываются локально на устройстве
+          {"\n"}• Используются только для анализа документов
+          {"\n"}• Не сохраняются в галерее без вашего согласия
+          {"\n"}• Не передаются третьим лицам
+          {"\n\n"}
+          Камера необходима для качественного распознавания текста и предоставления точной юридической помощи.
+        </Text>
         <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>Grant permission</Text>
+          <Text style={styles.permissionButtonText}>Разрешить доступ к камере</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <CameraView ref={cameraRef} style={styles.camera} facing={facing} flash={flash} zoom={0}>
         <View style={styles.documentFrame}>
           <View style={styles.cornerTL} />
@@ -131,12 +143,10 @@ export default CameraViewComponent;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
   },
   text: {
-    color: "white",
     fontSize: 16,
     textAlign: "center",
     marginBottom: 20,
@@ -148,8 +158,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   permissionButtonText: {
-    color: "white",
     fontSize: 16,
+    color: "white",
   },
   camera: {
     flex: 1,
@@ -183,7 +193,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cameraText: {
-    color: "white",
     position: "absolute",
     top: "15%",
     alignSelf: "center",
@@ -273,5 +282,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     borderRightWidth: 3,
     borderColor: "white",
+  },
+  descriptionText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
   },
 });

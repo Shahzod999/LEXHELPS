@@ -1,37 +1,37 @@
-import { useState, useRef, useEffect, useMemo } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  Animated,
-  TouchableWithoutFeedback,
-  Modal,
-  SafeAreaView,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useMenu } from "../context/MenuContext";
-import { useTheme } from "../context/ThemeContext";
-import { router } from "expo-router";
-import { removeTokenFromSecureStore } from "@/utils/secureStore";
-import { clearToken } from "@/redux/features/tokenSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { apiSlice } from "@/redux/api/apiSlice";
-import { getValidatedUrl } from "@/utils/ValidateImg";
+import { clearToken } from "@/redux/features/tokenSlice";
 import { selectUser } from "@/redux/features/userSlice";
+import { removeTokenFromSecureStore } from "@/utils/secureStore";
+import { getValidatedUrl } from "@/utils/ValidateImg";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Animated,
+  Image,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { useMenu } from "../context/MenuContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function SlideMenu() {
   const profile = useAppSelector(selectUser);
-  
   // Memoize profile data to prevent unnecessary re-renders
   const memoizedProfile = useMemo(() => profile, [profile?._id, profile?.name, profile?.profilePicture]);
 
   const dispatch = useAppDispatch();
   const { menuVisible, hideMenu } = useMenu();
   const { isDarkMode, toggleTheme, colors } = useTheme();
-  const [notifications, setNotifications] = useState(true);
+  // const [notifications, setNotifications] = useState(true);
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const [legalDropdownOpen, setLegalDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("🇬🇧 English");
@@ -40,15 +40,7 @@ export default function SlideMenu() {
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const languages = [
-    "🇬🇧 English",
-    "🇩🇪 German",
-    "🇪🇸 Spanish",
-    "🇫🇷 French",
-    "🇸🇦 Arabic",
-    "🇹🇷 Turkish",
-    "🇷🇺 Russian",
-  ];
+  const languages = ["🇬🇧 English", "🇩🇪 German", "🇪🇸 Spanish", "🇫🇷 French", "🇸🇦 Arabic", "🇹🇷 Turkish", "🇷🇺 Russian"];
 
   const legalItems = [
     { title: "Privacy Policy", route: "privacy-policy" },
@@ -112,11 +104,7 @@ export default function SlideMenu() {
   }
 
   return (
-    <Modal
-      visible={isVisible}
-      transparent={true}
-      animationType="none"
-      onRequestClose={hideMenu}>
+    <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={hideMenu}>
       <View style={styles.modalContainer}>
         <TouchableWithoutFeedback onPress={hideMenu}>
           <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]} />
@@ -129,7 +117,8 @@ export default function SlideMenu() {
               transform: [{ translateX: slideAnim }],
               backgroundColor: colors.card,
             },
-          ]}>
+          ]}
+        >
           <SafeAreaView style={{ flex: 1 }}>
             <ScrollView style={styles.scrollContent}>
               {/* Close Button */}
@@ -146,105 +135,72 @@ export default function SlideMenu() {
                   style={styles.avatar}
                 />
                 <View style={styles.profileInfo}>
-                  <Text style={[styles.userName, { color: colors.text }]}>
-                    Hi {memoizedProfile?.name}
-                  </Text>
-                  <Text style={[styles.welcomeText, { color: colors.hint }]}>
-                    Welcome Back!
-                  </Text>
-                  <View
-                    style={[
-                      styles.badge,
-                      { backgroundColor: colors.accent + "20" },
-                    ]}>
-                    <Text style={[styles.badgeText, { color: colors.accent }]}>
-                      Free User
-                    </Text>
+                  <Text style={[styles.userName, { color: colors.text }]}>Hi {memoizedProfile?.name}</Text>
+                  <Text style={[styles.welcomeText, { color: colors.hint }]}>Welcome Back!</Text>
+                  <View style={[styles.badge, { backgroundColor: colors.accent + "20" }]}>
+                    <Text style={[styles.badgeText, { color: colors.accent }]}>Free User</Text>
                   </View>
                 </View>
               </View>
 
               {/* Divider */}
-              <View
-                style={[styles.divider, { backgroundColor: colors.border }]}
-              />
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
               {/* Profile Section */}
               <View style={styles.section}>
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => navigateTo("account-settings")}>
-                  <Ionicons
-                    name="person-outline"
-                    size={22}
-                    color={colors.text}
-                  />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>
-                    Account Settings
-                  </Text>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo("account-settings")}>
+                  <Ionicons name="person-outline" size={22} color={colors.text} />
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>Account Settings</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => navigateTo("subscription")}>
+                {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo("subscription")}>
                   <Ionicons name="card-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>
-                    Subscription
-                  </Text>
-                </TouchableOpacity>
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>Subscription</Text>
+                </TouchableOpacity> */}
               </View>
 
               {/* Preferences Section */}
               <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.hint }]}>
-                  PREFERENCES
-                </Text>
+                <Text style={[styles.sectionTitle, { color: colors.hint }]}>PREFERENCES</Text>
 
                 <View style={styles.menuItem}>
                   <Ionicons name="moon-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>
-                    Dark Mode
-                  </Text>
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>Dark Mode</Text>
+                  <Switch
+                    value={isDarkMode}
+                    onValueChange={toggleTheme}
+                    style={styles.switch}
+                    trackColor={{
+                      false: "#767577",
+                      true: colors.accent + "80",
+                    }}
+                    thumbColor={isDarkMode ? colors.accent : "white"}
+                  />
                 </View>
 
-                <View style={styles.menuItem}>
-                  <Ionicons
-                    name="notifications-outline"
-                    size={22}
-                    color={colors.text}
+                {/* <View style={styles.menuItem}>
+                  <Ionicons name="notifications-outline" size={22} color={colors.text} />
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>Notifications</Text>
+                  <Switch
+                    value={notifications}
+                    onValueChange={setNotifications}
+                    style={styles.switch}
+                    trackColor={{
+                      false: "#767577",
+                      true: colors.accent + "80",
+                    }}
+                    thumbColor={notifications ? colors.accent : "white"}
                   />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>
-                    Notifications
-                  </Text>
-                </View>
+                </View> */}
 
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() =>
-                    setLanguageDropdownOpen(!languageDropdownOpen)
-                  }>
-                  <Ionicons
-                    name="language-outline"
-                    size={22}
-                    color={colors.text}
-                  />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>
-                    Language
-                  </Text>
-                  <Ionicons
-                    name={languageDropdownOpen ? "chevron-up" : "chevron-down"}
-                    size={16}
-                    color={colors.text}
-                    style={styles.chevron}
-                  />
+                <TouchableOpacity style={styles.menuItem} onPress={() => setLanguageDropdownOpen(!languageDropdownOpen)}>
+                  <Ionicons name="language-outline" size={22} color={colors.text} />
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>Language</Text>
+                  <Ionicons name={languageDropdownOpen ? "chevron-up" : "chevron-down"} size={16} color={colors.text} style={styles.chevron} />
                 </TouchableOpacity>
 
                 {languageDropdownOpen && (
-                  <View
-                    style={[
-                      styles.dropdownContainer,
-                      { backgroundColor: colors.darkBackground },
-                    ]}>
+                  <View style={[styles.dropdownContainer, { backgroundColor: colors.darkBackground }]}>
                     {languages.map((language, index) => (
                       <TouchableOpacity
                         key={index}
@@ -257,7 +213,8 @@ export default function SlideMenu() {
                         onPress={() => {
                           setSelectedLanguage(language);
                           setLanguageDropdownOpen(false);
-                        }}>
+                        }}
+                      >
                         <Text
                           style={[
                             styles.dropdownItemText,
@@ -266,7 +223,8 @@ export default function SlideMenu() {
                               color: colors.accent,
                               fontWeight: "500",
                             },
-                          ]}>
+                          ]}
+                        >
                           {language}
                         </Text>
                       </TouchableOpacity>
@@ -277,78 +235,36 @@ export default function SlideMenu() {
 
               {/* Support Section */}
               <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.hint }]}>
-                  SUPPORT
-                </Text>
+                <Text style={[styles.sectionTitle, { color: colors.hint }]}>SUPPORT</Text>
 
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => navigateTo("help-center")}>
-                  <Ionicons
-                    name="help-circle-outline"
-                    size={22}
-                    color={colors.text}
-                  />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>
-                    Help Center
-                  </Text>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo("help-center")}>
+                  <Ionicons name="help-circle-outline" size={22} color={colors.text} />
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>Help Center</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => navigateTo("resources")}>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo("resources")}>
                   <Ionicons name="book-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>
-                    Find Resources
-                  </Text>
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>Find Resources</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => setLegalDropdownOpen(!legalDropdownOpen)}>
-                  <Ionicons
-                    name="document-text-outline"
-                    size={22}
-                    color={colors.text}
-                  />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>
-                    Legal
-                  </Text>
-                  <Ionicons
-                    name={legalDropdownOpen ? "chevron-up" : "chevron-down"}
-                    size={16}
-                    color={colors.text}
-                    style={styles.chevron}
-                  />
+                <TouchableOpacity style={styles.menuItem} onPress={() => setLegalDropdownOpen(!legalDropdownOpen)}>
+                  <Ionicons name="document-text-outline" size={22} color={colors.text} />
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>Legal</Text>
+                  <Ionicons name={legalDropdownOpen ? "chevron-up" : "chevron-down"} size={16} color={colors.text} style={styles.chevron} />
                 </TouchableOpacity>
 
                 {legalDropdownOpen && (
-                  <View
-                    style={[
-                      styles.dropdownContainer,
-                      { backgroundColor: colors.darkBackground },
-                    ]}>
+                  <View style={[styles.dropdownContainer, { backgroundColor: colors.darkBackground }]}>
                     {legalItems.map((item, index) => (
-                      <TouchableOpacity
-                        key={index}
-                        style={styles.dropdownItem}
-                        onPress={() => navigateTo(item.route)}>
-                        <Text
-                          style={[
-                            styles.dropdownItemText,
-                            { color: colors.text },
-                          ]}>
-                          {item.title}
-                        </Text>
+                      <TouchableOpacity key={index} style={styles.dropdownItem} onPress={() => navigateTo(item.route)}>
+                        <Text style={[styles.dropdownItemText, { color: colors.text }]}>{item.title}</Text>
                       </TouchableOpacity>
                     ))}
                   </View>
                 )}
               </View>
 
-              <TouchableOpacity
-                style={[styles.logoutButton, { backgroundColor: "#F44336" }]}
-                onPress={handleLogout}>
+              <TouchableOpacity style={[styles.logoutButton, { backgroundColor: "#F44336" }]} onPress={handleLogout}>
                 <Ionicons name="log-out-outline" size={22} color="white" />
                 <Text style={styles.logoutText}>Logout</Text>
               </TouchableOpacity>
@@ -494,5 +410,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "600",
     marginLeft: 10,
+  },
+  switch: {
+    transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
   },
 });

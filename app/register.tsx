@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
-import ThemedScreen from "@/components/ThemedScreen";
 import LanguagePicker from "@/components/Register/LanguagePicker";
 import RegistrationForm from "@/components/Register/RegistrationForm";
 import ThemedButton from "@/components/ThemedButton";
-import { Link, router } from "expo-router";
+import ThemedScreen from "@/components/ThemedScreen";
 import { useRegisterMutation } from "@/redux/api/endpoints/authApiSlice";
+import { Link, router } from "expo-router";
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 const RegisterScreen = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>();
@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   linkContainer: {
-    marginVertical: 10,
     alignItems: "center",
   },
   disclaimerText: {
