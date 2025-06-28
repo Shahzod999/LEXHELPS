@@ -1,18 +1,20 @@
-import { Tabs , useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { Text, View, TouchableOpacity } from "react-native";
-import { useMenu } from "../../context/MenuContext";
-import { useTheme } from "../../context/ThemeContext";
-import { ChatProvider } from "../../context/ChatContext";
-import SlideMenu from "../../components/SlideMenu";
-import { useEffect, useState } from "react";
+import LoadingScreen from "@/components/common/LoadingScreen";
 import { useAppSelector } from "@/hooks/reduxHooks";
+import { useGetProfileQuery } from "@/redux/api/endpoints/authApiSlice";
 import { selectToken } from "@/redux/features/tokenSlice";
 import { getTokenFromSecureStore } from "@/utils/secureStore";
-import LoadingScreen from "@/components/common/LoadingScreen";
-import { useGetProfileQuery } from "@/redux/api/endpoints/authApiSlice";
+import { Ionicons } from "@expo/vector-icons";
+import { Tabs, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Text, TouchableOpacity, View } from "react-native";
+import SlideMenu from "../../components/SlideMenu";
+import { ChatProvider } from "../../context/ChatContext";
+import { useMenu } from "../../context/MenuContext";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function TabsLayout() {
+  const { t } = useTranslation();
   const { toggleMenu } = useMenu();
   const { isDarkMode, colors } = useTheme();
   const router = useRouter();
@@ -58,7 +60,7 @@ export default function TabsLayout() {
           <Tabs.Screen
             name="index"
             options={{
-              title: "Home",
+              title: t('home'),
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="home" size={size} color={color} />
               ),
@@ -67,7 +69,7 @@ export default function TabsLayout() {
           <Tabs.Screen
             name="chat"
             options={{
-              title: "Chat",
+              title: t('chat'),
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="chatbubble" size={size} color={color} />
               ),
@@ -76,7 +78,7 @@ export default function TabsLayout() {
           <Tabs.Screen
             name="scan"
             options={{
-              title: "Scan",
+              title: t('scan'),
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="scan" size={size} color={color} />
               ),
@@ -85,7 +87,7 @@ export default function TabsLayout() {
           <Tabs.Screen
             name="activity"
             options={{
-              title: "Activity",
+              title: t('activity'),
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="pulse" size={size} color={color} />
               ),
@@ -94,7 +96,7 @@ export default function TabsLayout() {
           <Tabs.Screen
             name="menu"
             options={{
-              title: "Menu",
+              title: t('menu'),
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="menu" size={size} color={color} />
               ),
@@ -109,7 +111,7 @@ export default function TabsLayout() {
                   <Ionicons name="menu" size={24} color={colors.text} />
                   <Text
                     style={{ fontSize: 10, marginTop: 2, color: colors.text }}>
-                    Menu
+                    {t('menu')}
                   </Text>
                 </TouchableOpacity>
               ),

@@ -1,10 +1,7 @@
+import i18n from "@/i18";
 import { setToken } from "@/redux/features/tokenSlice";
 import { setUser } from "@/redux/features/userSlice";
-import {
-  LoginResponseType,
-  ProfileResponseType,
-  UpdateProfileType,
-} from "@/types/login";
+import { LoginResponseType, ProfileResponseType, UpdateProfileType } from "@/types/login";
 import { saveTokenToSecureStore } from "@/utils/secureStore";
 import { apiSlice } from "../apiSlice";
 
@@ -61,6 +58,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           dispatch(setUser(data.data.user));
+          i18n.changeLanguage(data.data.user.language);
         } catch (error) {
           console.log(error);
         }
@@ -85,10 +83,4 @@ export const authApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const {
-  useLoginMutation,
-  useRegisterMutation,
-  useGetProfileQuery,
-  useUpdateProfileMutation,
-  useDeleteProfileMutation,
-} = authApiSlice;
+export const { useLoginMutation, useRegisterMutation, useGetProfileQuery, useUpdateProfileMutation, useDeleteProfileMutation } = authApiSlice;

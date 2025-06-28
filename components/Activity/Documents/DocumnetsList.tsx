@@ -1,15 +1,17 @@
-import { Text, View } from "react-native";
-import React from "react";
-import Documents from "./Documents";
+import { Loading } from "@/components/common/LoadingScreen";
+import SwipeDelete from "@/components/common/SwipeDelete";
+import { useTheme } from "@/context/ThemeContext";
 import {
   useDeleteDocumentMutation,
   useGetUserDocumentsQuery,
 } from "@/redux/api/endpoints/documentApiSlice";
-import { Loading } from "@/components/common/LoadingScreen";
-import SwipeDelete from "@/components/common/SwipeDelete";
-import { useTheme } from "@/context/ThemeContext";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Text, View } from "react-native";
+import Documents from "./Documents";
 
 const DocumnetsList = () => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const { data: documents, isLoading } = useGetUserDocumentsQuery();
   const [deleteDocument, { isLoading: isDeleting }] =
@@ -27,7 +29,7 @@ const DocumnetsList = () => {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={{ color: colors.text }}>
-          After uploading a document, it will appear here
+          {t('afterUploadingDocument')}
         </Text>
       </View>
     );

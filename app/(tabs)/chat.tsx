@@ -5,6 +5,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useGetUserOneChatQuery } from "@/redux/api/endpoints/chatApiSlice";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -31,6 +32,7 @@ interface UIMessage {
 }
 
 const ChatScreen = () => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const [inputText, setInputText] = useState("");
   const [chatHistoryVisible, setChatHistoryVisible] = useState(false);
@@ -106,11 +108,11 @@ const ChatScreen = () => {
   };
 
   const getConnectionStatus = () => {
-    if (isConnecting) return "Connecting...";
-    if (!isConnected) return "Disconnected";
-    if (!selectedChatId) return "Ready to chat...";
-    if (!selectedChat.isSubscribed) return "Subscribing to chat...";
-    return "Connected";
+    if (isConnecting) return t('connecting');
+    if (!isConnected) return t('disconnected');
+    if (!selectedChatId) return t('readyToChat');
+    if (!selectedChat.isSubscribed) return t('subscribingToChat');
+    return t('connected');
   };
 
   const getConnectionColor = () => {
@@ -125,7 +127,7 @@ const ChatScreen = () => {
   if (finalMessages.length === 0) {
     finalMessages.push({
       _id: "welcome",
-      content: "Hello! I'm your AI legal companion. How can I help you today with visa or migration questions?",
+      content: t('aiWelcomeMessage'),
       role: "assistant",
       createdAt: new Date().toISOString(),
     });
@@ -147,8 +149,8 @@ const ChatScreen = () => {
         <PanGestureHandler onHandlerStateChange={handleSwipeGesture}>
           <ScrollView contentContainerStyle={styles.chatContent}>
             <Header
-              title="Ask Lex - Your Legal Companion"
-              subtitle="Get clear, calm answers to your legal questions"
+              title={t('askLexTitle')}
+              subtitle={t('askLexSubtitle')}
               secondIcon="chatbubbles"
               secondIconFunction={handleChatHistoryToggle}
             />
@@ -157,7 +159,7 @@ const ChatScreen = () => {
             <View style={styles.statusContainer}>
               <View style={[styles.statusIndicator, { backgroundColor: getConnectionColor() }]} />
               <Text style={[styles.statusText, { color: colors.text }]}>{getConnectionStatus()}</Text>
-              {selectedChatId && <Text style={[styles.statusText, { color: colors.text, marginLeft: 8 }]}>• Chat: {selectedChatId.slice(-6)}</Text>}
+              {selectedChatId && <Text style={[styles.statusText, { color: colors.text, marginLeft: 8 }]}>• {t('chatLabel')} {selectedChatId.slice(-6)}</Text>}
             </View>
 
             <View style={styles.chatContainer}>
@@ -192,7 +194,7 @@ const ChatScreen = () => {
           <View style={[styles.inputWrapper, { backgroundColor: colors.background }]}>
             <TextInput
               style={[styles.input, { color: colors.text }]}
-              placeholder="Your conversations are confidential and protected"
+              placeholder={t('chatPlaceholder')}
               placeholderTextColor={colors.hint}
               value={inputText}
               onChangeText={setInputText}

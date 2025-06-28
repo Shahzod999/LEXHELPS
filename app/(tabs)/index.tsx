@@ -1,13 +1,15 @@
+import Header from "@/components/Card/Header";
+import HomeCard from "@/components/Card/HomeCard";
+import Emergency from "@/components/Home/Emergency";
+import Quotes from "@/components/Quotes";
+import { useTheme } from "@/context/ThemeContext";
+import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import ThemedScreen from "../../components/ThemedScreen";
-import HomeCard from "@/components/Card/HomeCard";
-import { useTheme } from "@/context/ThemeContext";
-import Header from "@/components/Card/Header";
-import Emergency from "@/components/Home/Emergency";
-import { useRouter } from "expo-router";
-import Quotes from "@/components/Quotes";
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const router = useRouter();
 
@@ -17,18 +19,18 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
         <Header
-          title="Welcome to Lex - Your Legal Guardian"
-          subtitle="You're not alone your legal journey"
+          title={t('welcomeToLex')}
+          subtitle={t('notAloneJourney')}
         />
         <Quotes />
 
         <Text style={[styles.title, { color: colors.text }]}>
-          How can we help you today?
+          {t('howCanWeHelp')}
         </Text>
 
         <HomeCard
-          title="Upload Documents"
-          description="Let AI analyze your legal papers"
+          title={t('uploadDocuments')}
+          description={t('uploadDocumentsDesc')}
           icon="cloud-upload-outline"
           color={colors.accent}
           onPress={() => {
@@ -36,8 +38,8 @@ export default function HomeScreen() {
           }}
         />
         <HomeCard
-          title="Immigration Help"
-          description="Navigate visa and status options"
+          title={t('immigrationHelp')}
+          description={t('immigrationHelpDesc')}
           icon="document-text"
           color={colors.accent}
           onPress={() => {
@@ -45,8 +47,8 @@ export default function HomeScreen() {
           }}
         />
         <HomeCard
-          title="Ask Question"
-          description="Chat with AI legal assistant"
+          title={t('askQuestion')}
+          description={t('askQuestionDesc')}
           icon="chatbubble-outline"
           color={colors.success}
           onPress={() => {
@@ -54,8 +56,8 @@ export default function HomeScreen() {
           }}
         />
         <HomeCard
-          title="Find Resources"
-          description="local help and legal aid"
+          title={t('findResources')}
+          description={t('findResourcesDesc')}
           icon="location-outline"
           color={colors.warning}
           onPress={() => {

@@ -5,20 +5,22 @@ import ThemedScreen from "@/components/ThemedScreen";
 import { useRegisterMutation } from "@/redux/api/endpoints/authApiSlice";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 
 const RegisterScreen = () => {
+  const { t } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>();
   const [step, setStep] = useState<number>(0);
-  const [registrationData, setRegistrationData] = useState<{
-    dateOfBirth: string;
-    phoneNumber: string;
-    nationality: string;
-    name: string;
-    email: string;
-    password: string;
-    bio: string;
-  } | null>(null);
+  // const [registrationData, setRegistrationData] = useState<{
+  //   dateOfBirth: string;
+  //   phoneNumber: string;
+  //   nationality: string;
+  //   name: string;
+  //   email: string;
+  //   password: string;
+  //   bio: string;
+  // } | null>(null);
 
   const [register, { isLoading }] = useRegisterMutation();
 
@@ -41,7 +43,7 @@ const RegisterScreen = () => {
     password: string;
     bio: string;
   }) => {
-    setRegistrationData(data);
+    // setRegistrationData(data);
 
     try {
       console.log("Registration data:", {
@@ -66,8 +68,8 @@ const RegisterScreen = () => {
         <View style={styles.container}>
           <LanguagePicker selectedLanguage={selectedLanguage} onLanguageSelect={handleLanguageSelect} />
           <View style={styles.buttonContainer}>
-            <ThemedButton title="Login" onPress={() => router.push("/login")} />
-            <ThemedButton title="Continue" onPress={handleContinue} disabled={!selectedLanguage} style={styles.button} />
+            <ThemedButton title={"Login"} onPress={() => router.push("/login")} />
+            <ThemedButton title={t('continue')} onPress={handleContinue} disabled={!selectedLanguage} style={styles.button} />
           </View>
         </View>
       ) : (
@@ -77,14 +79,14 @@ const RegisterScreen = () => {
       )}
 
       <View style={styles.linkContainer}>
-        <Text style={styles.disclaimerText}>Нажимая &quot;Продолжить&quot;, вы подтверждаете, что ознакомились и согласны с:</Text>
+        <Text style={styles.disclaimerText}>{t('privacyPolicyDisclaimer')}</Text>
         <View style={styles.linksRow}>
           <Link href="https://www.lexhelps.com/privacy" style={styles.link}>
-            Политикой конфиденциальности
+            {t('privacyPolicy')}
           </Link>
-          <Text style={styles.andText}> и </Text>
+          <Text style={styles.andText}> {t('and')} </Text>
           <Link href="https://www.lexhelps.com/terms-of-use" style={styles.link}>
-            Условиями использования
+            {t('termsOfUse')}
           </Link>
         </View>
       </View>

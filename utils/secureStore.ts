@@ -13,3 +13,13 @@ export async function getTokenFromSecureStore(): Promise<string | null> {
 export async function removeTokenFromSecureStore() {
   await SecureStore.deleteItemAsync(TOKEN_KEY);
 }
+
+const LANGUAGE_KEY = "selectedLanguage";
+
+export async function saveLanguageToSecureStore(language: string) {
+  await SecureStore.setItemAsync(LANGUAGE_KEY, language);
+}
+
+export async function getLanguageFromSecureStore(): Promise<string | null> {
+  return await SecureStore.getItemAsync(LANGUAGE_KEY);
+}

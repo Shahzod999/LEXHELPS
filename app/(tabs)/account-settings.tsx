@@ -15,6 +15,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Image,
@@ -32,6 +33,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { useToast } from "../../context/ToastContext";
 
 export default function AccountSettings() {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const { showSuccess, showError } = useToast();
@@ -73,7 +75,7 @@ export default function AccountSettings() {
       return response.data?.filePath;
     } catch (error) {
       console.error("Error uploading image:", error);
-      showError("Ошибка при загрузке изображения");
+      showError(t('errorUploadingImage'));
       throw error;
     }
   };
@@ -103,10 +105,10 @@ export default function AccountSettings() {
             throw new Error("Failed to update profile");
           }
 
-          showSuccess("Фото профиля успешно обновлено");
+          showSuccess(t('profilePictureUpdated'));
         } catch (error) {
           console.error("Error updating profile picture:", error);
-          showError("Ошибка при обновлении фото профиля");
+          showError(t('errorUpdatingProfilePicture'));
         }
       }
     } catch (error) {
@@ -140,11 +142,11 @@ export default function AccountSettings() {
           ...formData,
           dateOfBirth: formData.dateOfBirth.toISOString(),
         }).unwrap();
-        showSuccess("Профиль успешно обновлен");
+        showSuccess(t('profileUpdated'));
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      showError("Ошибка при обновлении профиля");
+      showError(t('errorUpdatingProfile'));
     }
   };
 
@@ -156,11 +158,11 @@ export default function AccountSettings() {
           password: passwordData.password,
         }).unwrap();
         setPasswordData({ oldPassword: "", password: "" });
-        showSuccess("Пароль успешно изменен");
+        showSuccess(t('passwordChanged'));
       }
     } catch (error) {
       console.error("Error changing password:", error);
-      showError("Ошибка при изменении пароля");
+      showError(t('errorChangingPassword'));
     }
   };
 
@@ -187,12 +189,12 @@ export default function AccountSettings() {
         dispatch(clearToken());
         router.replace("/login");
         dispatch(apiSlice.util.resetApiState());
-        showSuccess("Аккаунт успешно удален");
+        showSuccess(t('accountDeleted'));
       } else {
         showError(res.message);
       }
     } catch (error) {
-      showError("Ошибка при удалении аккаунта");
+      showError(t('errorDeletingAccount'));
     }
   };
 
@@ -228,19 +230,19 @@ export default function AccountSettings() {
           <ThemedCard style={styles.infoCard}>
             <View style={styles.sectionHeader}>
               <Ionicons name="person-circle-outline" size={24} color={colors.accent} />
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Personal Information</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('personalInformation')}</Text>
             </View>
 
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="person-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>Full Name</Text>
+                <Text style={[styles.label, { color: colors.hint }]}>{t('fullName')}</Text>
               </View>
               <TextInput
                 style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.name}
                 onChangeText={(text) => setFormData((prev) => ({ ...prev, name: text }))}
-                placeholder="Enter your full name"
+                placeholder={t('enterFullName')}
                 placeholderTextColor={colors.hint}
               />
             </View>
@@ -248,13 +250,13 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="mail-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>Email</Text>
+                <Text style={[styles.label, { color: colors.hint }]}>{t('email')}</Text>
               </View>
               <TextInput
                 style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.email}
                 onChangeText={(text) => setFormData((prev) => ({ ...prev, email: text }))}
-                placeholder="Enter your email"
+                placeholder={t('enterEmail')}
                 placeholderTextColor={colors.hint}
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -264,13 +266,13 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="call-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>Phone Number</Text>
+                <Text style={[styles.label, { color: colors.hint }]}>{t('phoneNumber')}</Text>
               </View>
               <TextInput
                 style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.phoneNumber}
                 onChangeText={(text) => setFormData((prev) => ({ ...prev, phoneNumber: text }))}
-                placeholder="Enter your phone number"
+                placeholder={t('enterPhoneNumber')}
                 placeholderTextColor={colors.hint}
                 keyboardType="phone-pad"
               />
@@ -279,13 +281,13 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="globe-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>Nationality</Text>
+                <Text style={[styles.label, { color: colors.hint }]}>{t('nationality')}</Text>
               </View>
               <TextInput
                 style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.nationality}
                 onChangeText={(text) => setFormData((prev) => ({ ...prev, nationality: text }))}
-                placeholder="Enter your nationality"
+                placeholder={t('enterNationality')}
                 placeholderTextColor={colors.hint}
               />
             </View>
@@ -293,7 +295,7 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="calendar-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>Date of Birth</Text>
+                <Text style={[styles.label, { color: colors.hint }]}>{t('dateOfBirth')}</Text>
               </View>
               <TouchableOpacity
                 style={[styles.input, styles.dateInput, { backgroundColor: colors.card }]}
@@ -306,7 +308,7 @@ export default function AccountSettings() {
               </TouchableOpacity>
 
               {Platform.OS === "ios" ? (
-                <BottomModal visible={showDatePicker} onClose={() => setShowDatePicker(false)} onConfirm={handleConfirmDate} title="Select Date">
+                <BottomModal visible={showDatePicker} onClose={() => setShowDatePicker(false)} onConfirm={handleConfirmDate} title={t('selectDate')}>
                   <DateTimePicker
                     value={tempDate}
                     mode="date"
@@ -326,13 +328,13 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="chatbubble-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>About Me</Text>
+                <Text style={[styles.label, { color: colors.hint }]}>{t('aboutMe')}</Text>
               </View>
               <TextInput
                 style={[styles.input, styles.bioInput, { backgroundColor: colors.card, color: colors.text }]}
                 value={formData.bio}
                 onChangeText={(text) => setFormData((prev) => ({ ...prev, bio: text }))}
-                placeholder="Tell us about yourself"
+                placeholder={t('tellAboutYourself')}
                 placeholderTextColor={colors.hint}
                 multiline
                 numberOfLines={4}
@@ -340,19 +342,19 @@ export default function AccountSettings() {
               />
             </View>
 
-            <ThemedButton title="Save Changes" onPress={handleSubmit} loading={isLoading} style={styles.button} icon="save-outline" />
+            <ThemedButton title={t('saveChanges')} onPress={handleSubmit} loading={isLoading} style={styles.button} icon="save-outline" />
           </ThemedCard>
 
           <ThemedCard style={styles.infoCard}>
             <View style={styles.sectionHeader}>
               <Ionicons name="lock-closed-outline" size={24} color={colors.accent} />
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Change Password</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('changePassword')}</Text>
             </View>
 
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="key-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>Current Password</Text>
+                <Text style={[styles.label, { color: colors.hint }]}>{t('currentPassword')}</Text>
               </View>
               <View style={styles.passwordContainer}>
                 <TextInput
@@ -364,7 +366,7 @@ export default function AccountSettings() {
                       oldPassword: text,
                     }))
                   }
-                  placeholder="Enter current password"
+                  placeholder={t('enterCurrentPassword')}
                   placeholderTextColor={colors.hint}
                   secureTextEntry={!showPassword}
                 />
@@ -377,25 +379,25 @@ export default function AccountSettings() {
             <View style={styles.formGroup}>
               <View style={styles.labelContainer}>
                 <Ionicons name="key-outline" size={20} color={colors.hint} />
-                <Text style={[styles.label, { color: colors.hint }]}>New Password</Text>
+                <Text style={[styles.label, { color: colors.hint }]}>{t('newPassword')}</Text>
               </View>
               <View style={styles.passwordContainer}>
                 <TextInput
                   style={[styles.input, styles.passwordInput, { backgroundColor: colors.card, color: colors.text }]}
                   value={passwordData.password}
                   onChangeText={(text) => setPasswordData((prev) => ({ ...prev, password: text }))}
-                  placeholder="Enter new password"
+                  placeholder={t('enterNewPassword')}
                   placeholderTextColor={colors.hint}
                   secureTextEntry={!showPassword}
                 />
               </View>
             </View>
 
-            <ThemedButton title="Change Password" onPress={handlePasswordChange} loading={totalLoading} style={styles.button} icon="key-outline" />
+            <ThemedButton title={t('changePassword')} onPress={handlePasswordChange} loading={totalLoading} style={styles.button} icon="key-outline" />
           </ThemedCard>
 
           <ThemedButton
-            title="Delete Account"
+            title={t('deleteAccount')}
             onPress={() => setShowDeleteModal(true)}
             loading={totalLoading}
             style={styles.deleteButton}
@@ -409,13 +411,13 @@ export default function AccountSettings() {
         visible={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={() => setShowDeleteModal(false)}
-        title="Delete Account"
+        title={t('deleteAccount')}
       >
         <View style={styles.deleteModal}>
-          <Text style={[styles.deleteModalTitle, { color: colors.text }]}>Are you sure you want to delete your account?</Text>
+          <Text style={[styles.deleteModalTitle, { color: colors.text }]}>{t('areYouSureYouWantToDeleteYourAccount')}</Text>
         </View>
         <ThemedButton
-          title="Delete"
+          title={t('deleteAccount')}
           onPress={handleDeleteAccount}
           loading={totalLoading}
           style={styles.button}

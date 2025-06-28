@@ -3,6 +3,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BottomModal from "../Modal/BottomModal";
 import Title from "./Title";
@@ -23,6 +24,7 @@ interface RegistrationFormProps {
 }
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, step, isLoading }) => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -75,7 +77,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
   const renderStep1 = () => (
     <>
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>Date of Birth</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('dateOfBirth')}</Text>
         <TouchableOpacity
           style={[styles.input, styles.dateInput, { backgroundColor: colors.card }]}
           onPress={() => {
@@ -87,7 +89,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
         </TouchableOpacity>
 
         {Platform.OS === "ios" ? (
-          <BottomModal visible={showDatePicker} onClose={handleCancelDate} onConfirm={handleConfirmDate} title="Select Date">
+          <BottomModal visible={showDatePicker} onClose={handleCancelDate} onConfirm={handleConfirmDate} title={t('selectDate')}>
             <DateTimePicker
               value={tempDate}
               mode="date"
@@ -103,10 +105,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>Phone Number</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('phoneNumber')}</Text>
         <TextInput
           style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder="Enter your phone number"
+          placeholder={t('enterPhoneNumber')}
           placeholderTextColor={colors.hint}
           value={phoneNumber}
           onChangeText={setPhoneNumber}
@@ -115,21 +117,21 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>Nationality</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('nationality')}</Text>
         <TextInput
           style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder="Enter your nationality"
+          placeholder={t('enterNationality')}
           placeholderTextColor={colors.hint}
           value={nationality}
           onChangeText={setNationality}
         />
         <Text style={[styles.label, { color: colors.hint, fontSize: 12, marginTop: 5 }]}>
-          Depending on your nationality, we will provide you with the best possible experience.
+          {t('nationalityHint')}
         </Text>
       </View>
       <View style={styles.buttonContainer}>
-        <ThemedButton title="Back" onPress={() => setStep(0)} variant="secondary" />
-        <ThemedButton title="Next Step" onPress={() => setStep(2)} style={styles.button} />
+        <ThemedButton title={t('back')} onPress={() => setStep(0)} variant="secondary" />
+        <ThemedButton title={t('nextStep')} onPress={() => setStep(2)} style={styles.button} />
       </View>
     </>
   );
@@ -137,10 +139,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
   const renderStep2 = () => (
     <>
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>Full Name</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('fullName')}</Text>
         <TextInput
           style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder="Enter your full name"
+          placeholder={t('enterFullName')}
           placeholderTextColor={colors.hint}
           value={name}
           onChangeText={setName}
@@ -148,10 +150,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>Email</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('email')}</Text>
         <TextInput
           style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder="Enter your email"
+          placeholder={t('enterEmail')}
           placeholderTextColor={colors.hint}
           value={email}
           onChangeText={setEmail}
@@ -161,11 +163,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>Password</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('password')}</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             style={[styles.input, styles.passwordInput, { backgroundColor: colors.card, color: colors.text }]}
-            placeholder="Create a password"
+            placeholder={t('createPassword')}
             placeholderTextColor={colors.hint}
             value={password}
             onChangeText={setPassword}
@@ -178,10 +180,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>About Me</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('aboutMe')}</Text>
         <TextInput
           style={[styles.input, styles.bioInput, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder="This will be used to personalize your experience."
+          placeholder={t('aboutMePlaceholder')}
           placeholderTextColor={colors.hint}
           value={bio}
           onChangeText={setBio}
@@ -193,8 +195,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.buttonContainer}>
-        <ThemedButton title="Back" onPress={() => setStep(1)} variant="secondary" />
-        <ThemedButton title="Complete Registration" onPress={handleSubmit} disabled={!isStep2Valid} style={styles.button} loading={isLoading} />
+        <ThemedButton title={t('back')} onPress={() => setStep(1)} variant="secondary" />
+        <ThemedButton title={t('completeRegistration')} onPress={handleSubmit} disabled={!isStep2Valid} style={styles.button} loading={isLoading} />
       </View>
     </>
   );
@@ -202,8 +204,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
   return (
     <View style={styles.container}>
       <Title
-        title={step === 1 ? "Personal Information" : "Account Details"}
-        subtitle={step === 1 ? "Please provide your personal details" : "Create your account credentials"}
+        title={step === 1 ? t('personalInformation') : t('accountDetails')}
+        subtitle={step === 1 ? t('personalInfoSubtitle') : t('accountDetailsSubtitle')}
       />
 
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>

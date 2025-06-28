@@ -1,13 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useMemo } from "react";
-import News from "./News";
+import LoadingText from "@/components/common/LoadingText";
+import { useTheme } from "@/context/ThemeContext";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { useLocation } from "@/hooks/useLocation";
-import { selectUser } from "@/redux/features/userSlice";
-import { useTheme } from "@/context/ThemeContext";
-import LoadingText from "@/components/common/LoadingText";
-import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { useGetOpenAIQuery } from "@/redux/api/endpoints/openAI";
+import { selectUser } from "@/redux/features/userSlice";
+import Ionicons from "@expo/vector-icons/build/Ionicons";
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { StyleSheet, Text, View } from "react-native";
+import News from "./News";
 
 export interface NewsItem {
   title: string;
@@ -18,6 +19,7 @@ export interface NewsItem {
 }
 
 const NewsList = () => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const profile = useAppSelector(selectUser);
   const { location, address, error: locationError, loading: locationLoading } = useLocation();
@@ -60,20 +62,20 @@ const NewsList = () => {
   return (
     <View>
       {locationLoading ? (
-        <LoadingText text="Получение местоположения..." />
+        <LoadingText text={t('gettingLocation')} />
       ) : location ? (
         <View style={styles.locationInfo}>
           <Ionicons name="navigate" size={16} color={colors.success} />
-          <Text style={[styles.locationText, { color: colors.success }]}>{address || "Определение адреса..."}</Text>
+          <Text style={[styles.locationText, { color: colors.success }]}>{address || t('determiningAddress')}</Text>
         </View>
       ) : locationError ? (
         <View style={styles.errorInfo}>
           <Text style={styles.errorText}>⚠️ {locationError}</Text>
-          <Text style={styles.errorSubText}>Новости не могут быть персонализированы без доступа к геолокации</Text>
+          <Text style={styles.errorSubText}>{t('newsCannotBePersonalized')}</Text>
         </View>
       ) : null}
 
-      {newsLoading && <LoadingText text="Загрузка новостей..." />}
+      {newsLoading && <LoadingText text={t('loadingNews')} />}
 
       {news.map((item: NewsItem, index: number) => (
         <News key={`${item.title}-${index}`} {...item} />
@@ -81,7 +83,7 @@ const NewsList = () => {
 
       {!isLoading && news.length === 0 && isReadyForNewsQuery && (
         <View style={styles.noNewsInfo}>
-          <Text style={styles.noNewsText}>Новости не найдены. Попробуйте позже.</Text>
+          <Text style={styles.noNewsText}>{t('newsNotFound')}</Text>
         </View>
       )}
     </View>

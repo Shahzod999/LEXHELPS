@@ -1,20 +1,23 @@
 import Header from "@/components/Card/Header";
 import ThemedScreen from "@/components/ThemedScreen";
 import ToggleTabsRN from "@/components/ToggleTabs/ToggleTabsRN";
-import { ScrollView, StyleSheet, View } from "react-native";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import DocumnetsList from "@/components/Activity/Documents/DocumnetsList";
 import NewsList from "@/components/Activity/News/NewsList";
 import ReindersList from "@/components/Activity/Reminders/ReindersList";
-const tabs = [
-  { id: "1", label: "Documents", type: "documents" },
-  { id: "2", label: "News", type: "news" },
-  { id: "3", label: "Reminders", type: "reminders" },
-];
 
 export default function ActivityScreen() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>("1");
+
+  const tabs = [
+    { id: "1", label: t('documentsTab'), type: "documents" },
+    { id: "2", label: t('newsTab'), type: "news" },
+    { id: "3", label: t('remindersTab'), type: "reminders" },
+  ];
 
   return (
     <ThemedScreen>
@@ -22,8 +25,8 @@ export default function ActivityScreen() {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}>
         <Header
-          title="Your Activity"
-          subtitle="Your files, news and reminders"
+          title={t('yourActivity')}
+          subtitle={t('yourFilesNewsReminders')}
         />
         <View style={styles.tabsContainer}>
           <ToggleTabsRN tabs={tabs} onTabChange={setActiveTab} />

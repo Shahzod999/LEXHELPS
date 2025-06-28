@@ -1,11 +1,13 @@
-import { Text, View, ScrollView } from "react-native";
-import ThemedScreen from "../../components/ThemedScreen";
-import ThemedCard from "../../components/ThemedCard";
-import ThemedButton from "../../components/ThemedButton";
-import { useTheme } from "../../context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
+import { ScrollView, Text, View } from "react-native";
+import ThemedButton from "../../components/ThemedButton";
+import ThemedCard from "../../components/ThemedCard";
+import ThemedScreen from "../../components/ThemedScreen";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function HelpCenterScreen() {
+  const { t } = useTranslation();
   const { colors } = useTheme();
 
   return (
@@ -13,19 +15,19 @@ export default function HelpCenterScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ height: "100%" }}>
-        <ThemedCard title="Frequently Asked Questions">
+        <ThemedCard title={t('frequentlyAskedQuestions')}>
           <Text style={{ color: colors.text, marginBottom: 15 }}>
-            Find answers to common questions about our app.
+            {t('faqDescription')}
           </Text>
           <ThemedButton
-            title="View FAQs"
+            title={t('viewFaqs')}
             onPress={() => console.log("FAQs pressed")}
             variant="outline"
             icon="help-circle-outline"
           />
         </ThemedCard>
 
-        <ThemedCard title="Contact Support">
+        <ThemedCard title={t('contactSupport')}>
           <View
             style={{
               flexDirection: "row",
@@ -49,19 +51,19 @@ export default function HelpCenterScreen() {
             </Text>
           </View>
           <ThemedButton
-            title="Send Message"
+            title={t('sendMessage')}
             onPress={() => console.log("Send message pressed")}
             variant="primary"
             icon="paper-plane-outline"
           />
         </ThemedCard>
 
-        <ThemedCard title="Tutorials">
+        <ThemedCard title={t('tutorials')}>
           <Text style={{ color: colors.text, marginBottom: 15 }}>
-            Learn how to use all features of our app with step-by-step guides.
+            {t('tutorialsDescription')}
           </Text>
           <ThemedButton
-            title="View Tutorials"
+            title={t('viewTutorials')}
             onPress={() => console.log("Tutorials pressed")}
             variant="secondary"
             icon="videocam-outline"

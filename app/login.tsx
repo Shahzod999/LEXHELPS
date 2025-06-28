@@ -1,3 +1,5 @@
+import { useLoginMutation } from "@/redux/api/endpoints/authApiSlice";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -7,10 +9,8 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { useTheme } from "../context/ThemeContext";
 import ThemedButton from "../components/ThemedButton";
-import { useLoginMutation } from "@/redux/api/endpoints/authApiSlice";
+import { useTheme } from "../context/ThemeContext";
 
 export default function LoginScreen() {
   const [login, { isLoading }] = useLoginMutation();

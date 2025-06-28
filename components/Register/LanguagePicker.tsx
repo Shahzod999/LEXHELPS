@@ -1,12 +1,8 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { useTheme } from "@/context/ThemeContext";
 import React from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useTranslation } from "react-i18next";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Title from "./Title";
 
 interface LanguagePickerProps {
@@ -15,56 +11,47 @@ interface LanguagePickerProps {
 }
 
 const languages = [
-  { code: "english", name: "English", flag: "🇬🇧" },
-  { code: "spanish", name: "Español", flag: "🇪🇸" },
-  { code: "french", name: "Français", flag: "🇫🇷" },
-  { code: "german", name: "Deutsch", flag: "🇩🇪" },
-  { code: "italian", name: "Italiano", flag: "🇮🇹" },
-  { code: "portuguese", name: "Português", flag: "🇵🇹" },
-  { code: "russian", name: "Русский", flag: "🇷🇺" },
-  { code: "chinese", name: "中文", flag: "🇨🇳" },
-  { code: "japanese", name: "日本語", flag: "🇯🇵" },
-  { code: "korean", name: "한국어", flag: "🇰🇷" },
-  { code: "arabic", name: "العربية", flag: "🇸🇦" },
-  { code: "hindi", name: "हिन्दी", flag: "🇮🇳" },
+  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "es", name: "Español", flag: "🇪🇸" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
+  { code: "de", name: "Deutsch", flag: "🇩🇪" },
+  { code: "it", name: "Italiano", flag: "🇮🇹" },
+  { code: "pt", name: "Português", flag: "🇵🇹" },
+  { code: "ru", name: "Русский", flag: "🇷🇺" },
+  { code: "zh", name: "中文", flag: "🇨🇳" },
+  { code: "ja", name: "日本語", flag: "🇯🇵" },
+  { code: "ko", name: "한국어", flag: "🇰🇷" },
+  { code: "ar", name: "العربية", flag: "🇸🇦" },
+  { code: "hi", name: "हिन्दी", flag: "🇮🇳" },
 ];
 
-const LanguagePicker: React.FC<LanguagePickerProps> = ({
-  selectedLanguage,
-  onLanguageSelect,
-}) => {
+const LanguagePicker: React.FC<LanguagePickerProps> = ({ selectedLanguage, onLanguageSelect }) => {
+  const { t } = useTranslation("auth");
   const { colors } = useTheme();
+  const { changeLanguage } = useLanguage();
+
+  const handleLanguageSelect = (languageCode: string) => {
+    changeLanguage(languageCode);
+    onLanguageSelect(languageCode);
+  };
 
   return (
     <View style={styles.container}>
-      <Title
-        title="Choose Your Language"
-        subtitle="Select your preferred language for the app"
-      />
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}>
+      <Title title={t("chooseLanguage")} subtitle={t("selectLanguageSubtitle")} />
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {languages.map((lang) => (
           <TouchableOpacity
             key={lang.code}
             style={[
               styles.languageItem,
               { backgroundColor: colors.card },
-              selectedLanguage === lang.code && [
-                styles.selectedItem,
-                { borderLeftColor: colors.accent },
-              ],
+              selectedLanguage === lang.code && [styles.selectedItem, { borderLeftColor: colors.accent }],
             ]}
-            onPress={() => onLanguageSelect(lang.code)}>
+            onPress={() => handleLanguageSelect(lang.code)}
+          >
             <Text style={styles.flag}>{lang.flag}</Text>
-            <Text style={[styles.languageName, { color: colors.text }]}>
-              {lang.name}
-            </Text>
-            {selectedLanguage === lang.code && (
-              <Text style={[styles.checkmark, { color: colors.accent }]}>
-                ✓
-              </Text>
-            )}
+            <Text style={[styles.languageName, { color: colors.text }]}>{lang.name}</Text>
+            {selectedLanguage === lang.code && <Text style={[styles.checkmark, { color: colors.accent }]}>✓</Text>}
           </TouchableOpacity>
         ))}
       </ScrollView>

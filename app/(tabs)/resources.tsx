@@ -1,19 +1,20 @@
-import { StyleSheet, ScrollView, Text, TextInput, View } from "react-native";
-import ThemedScreen from "@/components/ThemedScreen";
 import Header from "@/components/Card/Header";
-import ThemedCard from "@/components/ThemedCard";
-import { useTheme } from "@/context/ThemeContext";
-import { Ionicons } from "@expo/vector-icons";
-import ToggleTabsRN from "@/components/ToggleTabs/ToggleTabsRN";
-import { useState, useMemo, useCallback } from "react";
-import { useLocation } from "@/hooks/useLocation";
-import { useDebounce } from "@/hooks/useDebounce";
-import { useGetOpenAIQuery } from "@/redux/api/endpoints/openAI";
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { selectUser } from "@/redux/features/userSlice";
 import ResourceCard from "@/components/Resource/ResourceCard";
 import ResourceLoadingCard from "@/components/Resource/ResourceLoadingCard";
+import ThemedCard from "@/components/ThemedCard";
+import ThemedScreen from "@/components/ThemedScreen";
+import ToggleTabsRN from "@/components/ToggleTabs/ToggleTabsRN";
+import { useTheme } from "@/context/ThemeContext";
+import { useAppSelector } from "@/hooks/reduxHooks";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useLocation } from "@/hooks/useLocation";
+import { useGetOpenAIQuery } from "@/redux/api/endpoints/openAI";
+import { selectUser } from "@/redux/features/userSlice";
 import { Resource } from "@/types/resource";
+import { Ionicons } from "@expo/vector-icons";
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 const RESOURCE_TABS = [
   { id: "1", label: "All Resources", type: "all" },
@@ -26,7 +27,16 @@ const RESOURCE_TABS = [
 const LOADING_PLACEHOLDERS_COUNT = 3;
 
 export default function ResourcesScreen() {
+  const { t } = useTranslation();
   const { colors } = useTheme();
+
+  const RESOURCE_TABS = useMemo(() => [
+    { id: "1", label: t('allResources'), type: "all" },
+    { id: "2", label: t('legalAid'), type: "legal" },
+    { id: "3", label: t('immigration'), type: "immigration" },
+    { id: "4", label: t('housing'), type: "housing" },
+    { id: "5", label: t('hotlines'), type: "hotlines" },
+  ], [t]);
   const [activeTab, setActiveTab] = useState<string>("1");
   const [customLocation, setCustomLocation] = useState<string>("");
 
@@ -123,9 +133,9 @@ export default function ResourcesScreen() {
         <ThemedCard>
           <View style={styles.noDataContainer}>
             <Ionicons name="information-circle-outline" size={32} color={colors.hint} />
-            <Text style={[styles.noDataText, { color: colors.text }]}>Please complete your profile to see personalized resources</Text>
+            <Text style={[styles.noDataText, { color: colors.text }]}>{t('completeProfileForResources')}</Text>
             <Text style={[styles.noDataSubtext, { color: colors.hint }]}>
-              We need your location, nationality, and language preferences to find the best resources for you.
+              {t('profileRequirementsDesc')}
             </Text>
           </View>
         </ThemedCard>
@@ -136,7 +146,7 @@ export default function ResourcesScreen() {
       return (
         <View style={styles.resourcesContainer}>
           <Text style={[styles.resourcesHeader, { color: colors.text }]}>
-            Finding resources for {profile?.nationality} immigrants in {currentLocation}...
+            {t('findingResourcesFor', { nationality: profile?.nationality, location: currentLocation })}
           </Text>
           {Array(LOADING_PLACEHOLDERS_COUNT)
             .fill(0)
@@ -152,7 +162,7 @@ export default function ResourcesScreen() {
         <ThemedCard>
           <View style={styles.errorContainer}>
             <Ionicons name="warning-outline" size={32} color="#EF4444" />
-            <Text style={[styles.errorText, { color: colors.text }]}>Unable to load resources. Please check your connection and try again.</Text>
+            <Text style={[styles.errorText, { color: colors.text }]}>{t('unableToLoadResources')}</Text>
           </View>
         </ThemedCard>
       );
@@ -163,8 +173,8 @@ export default function ResourcesScreen() {
         <ThemedCard>
           <View style={styles.noDataContainer}>
             <Ionicons name="search-outline" size={32} color={colors.hint} />
-            <Text style={[styles.noDataText, { color: colors.text }]}>No resources found</Text>
-            <Text style={[styles.noDataSubtext, { color: colors.hint }]}>Try adjusting your location or browse different categories.</Text>
+            <Text style={[styles.noDataText, { color: colors.text }]}>{t('noResourcesFound')}</Text>
+            <Text style={[styles.noDataSubtext, { color: colors.hint }]}>{t('adjustLocationCategory')}</Text>
           </View>
         </ThemedCard>
       );
@@ -173,7 +183,16 @@ export default function ResourcesScreen() {
     return (
       <View style={styles.resourcesContainer}>
         <Text style={[styles.resourcesHeader, { color: colors.text }]}>
-          {filteredResources.length} {activeTabType === "all" ? "resources" : `${activeTabType} resources`} found
+          {activeTabType === "all" 
+            ? t('resourcesFound', { count: filteredResources.length })
+            : t('typeResourcesFound', { 
+                count: filteredResources.length, 
+                type: activeTabType === "legal" ? t('legalAid') : 
+                      activeTabType === "immigration" ? t('immigration') :
+                      activeTabType === "housing" ? t('housing') :
+                      activeTabType === "hotlines" ? t('hotlines') : activeTabType
+              })
+          }
         </Text>
         {filteredResources.map((resource: Resource) => (
           <ResourceCard key={resource.id} resource={resource} />
@@ -185,10 +204,10 @@ export default function ResourcesScreen() {
   return (
     <ThemedScreen>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        <Header title="Local Legal and Community Help" subtitle="Find real-world support when you need it most." />
+        <Header title={t('localLegalCommunityHelp')} subtitle={t('realWorldSupport')} />
 
         <ThemedCard>
-          <Text style={[styles.locationTitle, { color: colors.hint }]}>Your location</Text>
+          <Text style={[styles.locationTitle, { color: colors.hint }]}>{t('yourLocation')}</Text>
           <View
             style={[
               styles.locationInputContainer,
@@ -201,7 +220,7 @@ export default function ResourcesScreen() {
             <Ionicons name="location-outline" size={24} color={colors.hint} />
             <TextInput
               style={[styles.input, { color: colors.text }]}
-              placeholder={address || "Enter your location"}
+              placeholder={address || t('enterYourLocation')}
               placeholderTextColor={colors.hint}
               value={customLocation}
               onChangeText={handleLocationChange}
@@ -212,7 +231,7 @@ export default function ResourcesScreen() {
           {currentLocation && (
             <View style={styles.currentLocationContainer}>
               <Ionicons name="navigate-outline" size={16} color={colors.success} />
-              <Text style={[styles.currentLocationText, { color: colors.success }]}>Searching in: {currentLocation}</Text>
+              <Text style={[styles.currentLocationText, { color: colors.success }]}>{t('searchingIn')} {currentLocation}</Text>
             </View>
           )}
         </ThemedCard>

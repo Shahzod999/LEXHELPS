@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { apiSlice } from "@/redux/api/apiSlice";
 import { clearToken } from "@/redux/features/tokenSlice";
@@ -7,6 +8,7 @@ import { getValidatedUrl } from "@/utils/ValidateImg";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Animated,
   Image,
@@ -24,6 +26,8 @@ import { useMenu } from "../context/MenuContext";
 import { useTheme } from "../context/ThemeContext";
 
 export default function SlideMenu() {
+  const { t } = useTranslation();
+  const { currentLanguage, changeLanguage } = useLanguage();
   const profile = useAppSelector(selectUser);
   // Memoize profile data to prevent unnecessary re-renders
   const memoizedProfile = useMemo(() => profile, [profile?._id, profile?.name, profile?.profilePicture]);
@@ -34,17 +38,32 @@ export default function SlideMenu() {
   // const [notifications, setNotifications] = useState(true);
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const [legalDropdownOpen, setLegalDropdownOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("🇬🇧 English");
   const [isVisible, setIsVisible] = useState(menuVisible);
 
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const languages = ["🇬🇧 English", "🇩🇪 German", "🇪🇸 Spanish", "🇫🇷 French", "🇸🇦 Arabic", "🇹🇷 Turkish", "🇷🇺 Russian"];
+  const languages = [
+    { code: 'en', name: '🇬🇧 English' },
+    { code: 'ru', name: '🇷🇺 Русский' },
+    { code: 'es', name: '🇪🇸 Español' },
+    { code: 'fr', name: '🇫🇷 Français' },
+    { code: 'de', name: '🇩🇪 Deutsch' },
+    { code: 'it', name: '🇮🇹 Italiano' },
+    { code: 'pt', name: '🇵🇹 Português' },
+    { code: 'zh', name: '🇨🇳 中文' },
+    { code: 'ja', name: '🇯🇵 日本語' },
+    { code: 'ko', name: '🇰🇷 한국어' },
+    { code: 'ar', name: '🇸🇦 العربية' },
+    { code: 'hi', name: '🇮🇳 हिन्दी' },
+  ];
+
+  // Найти текущий язык в списке
+  const selectedLanguage = languages.find(lang => lang.code === currentLanguage) || languages[0];
 
   const legalItems = [
-    { title: "Privacy Policy", route: "privacy-policy" },
-    { title: "Terms of Use", route: "terms-of-use" },
+    { title: t('privacyPolicy'), route: "privacy-policy" },
+    { title: t('termsOfUse'), route: "terms-of-use" },
   ];
 
   useEffect(() => {
@@ -135,10 +154,10 @@ export default function SlideMenu() {
                   style={styles.avatar}
                 />
                 <View style={styles.profileInfo}>
-                  <Text style={[styles.userName, { color: colors.text }]}>Hi {memoizedProfile?.name}</Text>
-                  <Text style={[styles.welcomeText, { color: colors.hint }]}>Welcome Back!</Text>
+                  <Text style={[styles.userName, { color: colors.text }]}>{t('hiUser', { name: memoizedProfile?.name })}</Text>
+                  <Text style={[styles.welcomeText, { color: colors.hint }]}>{t('welcomeBack')}</Text>
                   <View style={[styles.badge, { backgroundColor: colors.accent + "20" }]}>
-                    <Text style={[styles.badgeText, { color: colors.accent }]}>Free User</Text>
+                    <Text style={[styles.badgeText, { color: colors.accent }]}>{t('freeUser')}</Text>
                   </View>
                 </View>
               </View>
@@ -150,7 +169,7 @@ export default function SlideMenu() {
               <View style={styles.section}>
                 <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo("account-settings")}>
                   <Ionicons name="person-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>Account Settings</Text>
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>{t('accountSettings')}</Text>
                 </TouchableOpacity>
 
                 {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo("subscription")}>
@@ -161,11 +180,11 @@ export default function SlideMenu() {
 
               {/* Preferences Section */}
               <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.hint }]}>PREFERENCES</Text>
+                <Text style={[styles.sectionTitle, { color: colors.hint }]}>{t('preferences')}</Text>
 
                 <View style={styles.menuItem}>
                   <Ionicons name="moon-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>Dark Mode</Text>
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>{t('darkMode')}</Text>
                   <Switch
                     value={isDarkMode}
                     onValueChange={toggleTheme}
@@ -195,7 +214,10 @@ export default function SlideMenu() {
 
                 <TouchableOpacity style={styles.menuItem} onPress={() => setLanguageDropdownOpen(!languageDropdownOpen)}>
                   <Ionicons name="language-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>Language</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.menuItemText, { color: colors.text }]}>{t('language')}</Text>
+                    <Text style={[styles.selectedLanguageText, { color: colors.hint }]}>{selectedLanguage.name}</Text>
+                  </View>
                   <Ionicons name={languageDropdownOpen ? "chevron-up" : "chevron-down"} size={16} color={colors.text} style={styles.chevron} />
                 </TouchableOpacity>
 
@@ -206,12 +228,12 @@ export default function SlideMenu() {
                         key={index}
                         style={[
                           styles.dropdownItem,
-                          selectedLanguage === language && {
+                          selectedLanguage.code === language.code && {
                             backgroundColor: colors.accent + "30",
                           },
                         ]}
                         onPress={() => {
-                          setSelectedLanguage(language);
+                          changeLanguage(language.code);
                           setLanguageDropdownOpen(false);
                         }}
                       >
@@ -219,13 +241,13 @@ export default function SlideMenu() {
                           style={[
                             styles.dropdownItemText,
                             { color: colors.text },
-                            selectedLanguage === language && {
+                            selectedLanguage.code === language.code && {
                               color: colors.accent,
                               fontWeight: "500",
                             },
                           ]}
                         >
-                          {language}
+                          {language.name}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -235,21 +257,21 @@ export default function SlideMenu() {
 
               {/* Support Section */}
               <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.hint }]}>SUPPORT</Text>
+                <Text style={[styles.sectionTitle, { color: colors.hint }]}>{t('support')}</Text>
 
                 <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo("help-center")}>
                   <Ionicons name="help-circle-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>Help Center</Text>
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>{t('helpCenter')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.menuItem} onPress={() => navigateTo("resources")}>
                   <Ionicons name="book-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>Find Resources</Text>
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>{t('findResources')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.menuItem} onPress={() => setLegalDropdownOpen(!legalDropdownOpen)}>
                   <Ionicons name="document-text-outline" size={22} color={colors.text} />
-                  <Text style={[styles.menuItemText, { color: colors.text }]}>Legal</Text>
+                  <Text style={[styles.menuItemText, { color: colors.text }]}>{t('legal')}</Text>
                   <Ionicons name={legalDropdownOpen ? "chevron-up" : "chevron-down"} size={16} color={colors.text} style={styles.chevron} />
                 </TouchableOpacity>
 
@@ -266,7 +288,7 @@ export default function SlideMenu() {
 
               <TouchableOpacity style={[styles.logoutButton, { backgroundColor: "#F44336" }]} onPress={handleLogout}>
                 <Ionicons name="log-out-outline" size={22} color="white" />
-                <Text style={styles.logoutText}>Logout</Text>
+                <Text style={styles.logoutText}>{t('logout')}</Text>
               </TouchableOpacity>
             </ScrollView>
           </SafeAreaView>
@@ -370,6 +392,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 15,
     flex: 1,
+  },
+  selectedLanguageText: {
+    fontSize: 12,
+    marginLeft: 15,
+    marginTop: 2,
   },
   chevron: {
     marginLeft: 5,
