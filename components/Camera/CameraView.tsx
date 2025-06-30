@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { CameraType, CameraView, FlashMode, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface CameraProps {
@@ -14,6 +15,7 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
   const [facing, setFacing] = useState<CameraType>("back");
   const [flash, setFlash] = useState<FlashMode>("off");
   const { colors } = useTheme();
+  const { t } = useTranslation("common");
   // Reference to the camera component to call takePictureAsync
   const cameraRef = useRef<CameraView>(null);
 
@@ -70,7 +72,7 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
     // Camera permissions are still loading
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Text style={styles.text}>Loading camera permissions...</Text>
+        <Text style={styles.text}>{t("loadingCameraPermissions")}</Text>
       </View>
     );
   }
@@ -79,20 +81,10 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
     // Camera permissions are not granted yet
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Text style={[styles.text, { color: colors.text }]}>Разрешение на использование камеры</Text>
-        <Text style={[styles.descriptionText, { color: colors.text }]}>
-          Lex использует камеру для сканирования юридических документов, удостоверений личности и других важных бумаг.
-          {"\n\n"}
-          Ваши фотографии:
-          {"\n"}• Обрабатываются локально на устройстве
-          {"\n"}• Используются только для анализа документов
-          {"\n"}• Не сохраняются в галерее без вашего согласия
-          {"\n"}• Не передаются третьим лицам
-          {"\n\n"}
-          Камера необходима для качественного распознавания текста и предоставления точной юридической помощи.
-        </Text>
+        <Text style={[styles.text, { color: colors.text }]}>{t("cameraPermissionTitle")}</Text>
+        <Text style={[styles.descriptionText, { color: colors.text }]}>{t("cameraPermissionDescription")}</Text>
         <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>Разрешить доступ к камере</Text>
+          <Text style={styles.permissionButtonText}>{t("allowCameraAccess")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -132,7 +124,7 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
           <Ionicons name="images-outline" size={24} color="white" />
         </TouchableOpacity>
 
-        <Text style={styles.cameraText}>Position document in frame</Text>
+        <Text style={styles.cameraText}>{t("positionDocumentInFrame")}</Text>
       </CameraView>
     </View>
   );

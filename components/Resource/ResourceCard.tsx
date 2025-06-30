@@ -1,9 +1,10 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Linking } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import ThemedCard from "../ThemedCard";
 import { useTheme } from "@/context/ThemeContext";
 import { Resource } from "@/types/resource";
+import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import ThemedCard from "../ThemedCard";
 
 interface ResourceCardProps {
   resource: Resource;
@@ -11,6 +12,7 @@ interface ResourceCardProps {
 
 const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
   const { colors } = useTheme();
+  const { t } = useTranslation("common");
 
   const handlePhonePress = (phone: string) => {
     Linking.openURL(`tel:${phone}`);
@@ -36,6 +38,21 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
         return 'call-outline';
       default:
         return 'information-circle-outline';
+    }
+  };
+
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'legal':
+        return t('legal');
+      case 'immigration':
+        return t('immigration');
+      case 'housing':
+        return t('housing');
+      case 'hotlines':
+        return t('hotlines');
+      default:
+        return type.charAt(0).toUpperCase() + type.slice(1);
     }
   };
 
@@ -65,14 +82,14 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
             color={getTypeColor(resource.type)} 
           />
           <Text style={[styles.typeText, { color: getTypeColor(resource.type) }]}>
-            {resource.type.charAt(0).toUpperCase() + resource.type.slice(1)}
+            {getTypeLabel(resource.type)}
           </Text>
         </View>
         
         {resource.verified && (
           <View style={styles.verifiedBadge}>
             <Ionicons name="checkmark-circle" size={16} color="#10B981" />
-            <Text style={styles.verifiedText}>Verified</Text>
+            <Text style={styles.verifiedText}>{t("verified")}</Text>
           </View>
         )}
         
@@ -91,7 +108,7 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
       {/* Services */}
       {resource.services.length > 0 && (
         <View style={styles.servicesContainer}>
-          <Text style={[styles.servicesTitle, { color: colors.text }]}>Services:</Text>
+          <Text style={[styles.servicesTitle, { color: colors.text }]}>{t("services")}</Text>
           <View style={styles.servicesTags}>
             {resource.services.slice(0, 3).map((service, index) => (
               <View key={index} style={[styles.serviceTag, { backgroundColor: colors.darkBackground }]}>
@@ -102,7 +119,7 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
             ))}
             {resource.services.length > 3 && (
               <Text style={[styles.moreServices, { color: colors.hint }]}>
-                +{resource.services.length - 3} more
+                +{resource.services.length - 3} {t("moreItems")}
               </Text>
             )}
           </View>
@@ -114,8 +131,8 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
         <View style={styles.languagesContainer}>
           <Ionicons name="language-outline" size={16} color={colors.hint} />
           <Text style={[styles.languagesText, { color: colors.hint }]}>
-            Languages: {resource.languages.slice(0, 3).join(', ')}
-            {resource.languages.length > 3 && ` +${resource.languages.length - 3} more`}
+            {t("languages")} {resource.languages.slice(0, 3).join(', ')}
+            {resource.languages.length > 3 && ` +${resource.languages.length - 3} ${t("moreItems")}`}
           </Text>
         </View>
       )}
@@ -163,7 +180,7 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
           >
             <Ionicons name="globe-outline" size={18} color={colors.accent} />
             <Text style={[styles.contactText, { color: colors.accent }]} numberOfLines={1}>
-              Visit Website
+              {t("visitWebsite")}
             </Text>
           </TouchableOpacity>
         )}

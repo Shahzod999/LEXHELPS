@@ -1,10 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const Emergency = () => {
   const { colors } = useTheme();
+  const { t } = useTranslation("common");
   const [showInfo, setShowInfo] = useState(false);
 
   return (
@@ -15,16 +17,15 @@ const Emergency = () => {
             styles.infoContainer,
             { backgroundColor: colors.darkBackground },
           ]}>
-          <Text style={styles.infoTitle}>Need Urgent Help?</Text>
+          <Text style={styles.infoTitle}>{t("needUrgentHelp")}</Text>
           <Text style={[styles.infoText, { color: colors.hint }]}>
-            We&apos;re here for you in critical situations
+            {t("hereForYou")}
           </Text>
           <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Access Emergency Resources</Text>
+            <Text style={styles.buttonText}>{t("accessEmergencyResources")}</Text>
           </TouchableOpacity>
           <Text style={[styles.infoText, { color: colors.hint }]}>
-            For life-threatening emergencies, please call local emergency
-            services immediately
+            {t("emergencyDisclaimer")}
           </Text>
         </View>
       )}

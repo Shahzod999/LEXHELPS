@@ -1,1 +1,25 @@
- 
+{
+  "locationPermissionDenied": "Acceso a la ubicación denegado",
+  "locationError": "Error al obtener la ubicación",
+  "error": "Error",
+  "unableToGetLocation": "No se pudo obtener su ubicación",
+  "perMonth": "/mes",
+  "services": "Servicios:",
+  "languages": "Idiomas:",
+  "moreItems": "más",
+  "visitWebsite": "Visitar sitio web",
+  "verified": "Verificado",
+  "legal": "Legal",
+  "immigration": "Inmigración",
+  "housing": "Vivienda",
+  "hotlines": "Líneas directas",
+  "needUrgentHelp": "¿Necesita ayuda urgente?",
+  "hereForYou": "Estamos aquí para ti en situaciones críticas",
+  "accessEmergencyResources": "Acceder a recursos de emergencia",
+  "emergencyDisclaimer": "Para emergencias que amenacen la vida, llame inmediatamente a los servicios de emergencia locales",
+  "loadingCameraPermissions": "Cargando permisos de cámara...",
+  "cameraPermissionTitle": "Permiso de Cámara",
+  "cameraPermissionDescription": "Lex usa la cámara para escanear documentos legales, identificaciones y otros papeles importantes.\n\nTus fotos:\n• Se procesan localmente en el dispositivo\n• Se usan solo para análisis de documentos\n• No se guardan en la galería sin tu consentimiento\n• No se comparten con terceros\n\nLa cámara es necesaria para el reconocimiento de texto de calidad y asistencia legal precisa.",
+  "allowCameraAccess": "Permitir Acceso a la Cámara",
+  "positionDocumentInFrame": "Posiciona el documento en el marco"
+} 

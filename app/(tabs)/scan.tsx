@@ -8,6 +8,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { useDeleteDocumentMutation, useUploadDocumentMutation } from "@/redux/api/endpoints/documentApiSlice";
 import { selectToken } from "@/redux/features/tokenSlice";
+import { selectUser } from "@/redux/features/userSlice";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
@@ -51,6 +52,7 @@ const ScanScreen = () => {
   const [isAnalyzed, setIsAnalyzed] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
   const [documentChatId, setDocumentChatId] = useState<string>("");
+  const user = useAppSelector(selectUser);
 
   const [uploadDocument, { isLoading: isUploading }] = useUploadDocumentMutation();
   const [deleteDocument, { isLoading: isDeleting }] = useDeleteDocumentMutation();
@@ -59,8 +61,8 @@ const ScanScreen = () => {
   const documentChat = useChatById(documentChatId || "");
 
   const tabs = [
-    { id: "1", label: t('scanTab'), type: "scan" },
-    { id: "2", label: t('uploadTab'), type: "upload" },
+    { id: "1", label: t("scanTab"), type: "scan" },
+    { id: "2", label: t("uploadTab"), type: "upload" },
   ];
 
   useEffect(() => {
@@ -106,13 +108,13 @@ const ScanScreen = () => {
     if (!token || documents.length === 0) return null;
 
     try {
-      setUploadProgress(t('preparingDocuments', { count: documents.length }));
+      setUploadProgress(t("preparingDocuments", { count: documents.length }));
 
       const formData = new FormData();
 
       // Добавляем все файлы в один FormData
       documents.forEach((document, index) => {
-        setUploadProgress(t('processingDocument', { current: index + 1, total: documents.length }));
+        setUploadProgress(t("processingDocument", { current: index + 1, total: documents.length }));
 
         const sanitizedFileName = sanitizeFileName(document.name || `document_${Date.now()}_${index}`);
 
@@ -127,16 +129,16 @@ const ScanScreen = () => {
       const documentNames = documents.map((doc) => doc.name || getDocumentTypeName(doc.type)).join(", ");
 
       formData.append("title", documentNames);
-      formData.append("language", "Russian");
+      formData.append("language", user?.language || "en");
 
-      setUploadProgress(t('uploadingAndAnalyzing'));
+      setUploadProgress(t("uploadingAndAnalyzing"));
       const response = await uploadDocument(formData).unwrap();
 
       if (response.chat?._id && response.document?._id) {
-        setUploadProgress(t('connectingToChat'));
+        setUploadProgress(t("connectingToChat"));
         setDocumentChatId(response.chat._id);
 
-        setUploadProgress(t('uploadCompleted'));
+        setUploadProgress(t("uploadCompleted"));
         setTimeout(() => setUploadProgress(""), 2000);
 
         return {
@@ -148,7 +150,7 @@ const ScanScreen = () => {
       return null;
     } catch (error) {
       console.error("Error uploading multiple documents:", error);
-      setUploadProgress(t('uploadFailed'));
+      setUploadProgress(t("uploadFailed"));
       setTimeout(() => setUploadProgress(""), 3000);
       return null;
     }
@@ -297,10 +299,10 @@ const ScanScreen = () => {
   };
 
   const handleDeleteAllDocuments = () => {
-    Alert.alert(t('deleteAllDocuments'), t('areYouSureDeleteAll'), [
-      { text: t('cancel'), style: "cancel" },
+    Alert.alert(t("deleteAllDocuments"), t("areYouSureDeleteAll"), [
+      { text: t("cancel"), style: "cancel" },
       {
-        text: t('deleteAll'),
+        text: t("deleteAll"),
         style: "destructive",
         onPress: async () => {
           try {
@@ -344,8 +346,6 @@ const ScanScreen = () => {
     if (type.includes("image")) return "Image";
     return "Document";
   };
-
-  // Monitor subscription status changes (only for debugging)
   useEffect(() => {
     if (documentChatId && documentChat.isSubscribed) {
       console.log(`✅ Successfully subscribed to document chat: ${documentChatId.slice(-6)}`);
@@ -357,11 +357,11 @@ const ScanScreen = () => {
   }
 
   const getConnectionStatus = () => {
-    if (!documentChatId) return t('noDocumentChat');
-    if (!isConnected) return t('disconnectedFromServer');
-    if (isUploading) return uploadProgress || t('uploadingDocuments');
-    if (!documentChat.isSubscribed) return t('connectingToDocumentChat');
-    return t('connectedToDocumentChat');
+    if (!documentChatId) return t("noDocumentChat");
+    if (!isConnected) return t("disconnectedFromServer");
+    if (isUploading) return uploadProgress || t("uploadingDocuments");
+    if (!documentChat.isSubscribed) return t("connectingToDocumentChat");
+    return t("connectedToDocumentChat");
   };
 
   const getConnectionColor = () => {
@@ -376,7 +376,7 @@ const ScanScreen = () => {
       {isDeleting && <Loading />}
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.chatContent}>
-          <Header title={t('documentScanner')} subtitle={t('scanAnalyzeDocuments')} />
+          <Header title={t("documentScanner")} subtitle={t("scanAnalyzeDocuments")} />
 
           <View style={styles.scanCard}>
             <ToggleTabsRN tabs={tabs} onTabChange={setActiveTab} />
@@ -386,8 +386,8 @@ const ScanScreen = () => {
                 {({ pressed }) => (
                   <View style={[styles.scanCardContent, pressed && styles.scanCardContentPressed, { borderColor: colors.accent }]}>
                     <HomeCard
-                      title={activeTab === "1" ? t('clickToScanDocument') : t('clickToUploadDocument')}
-                      description={t('uploadClearPhotos')}
+                      title={activeTab === "1" ? t("clickToScanDocument") : t("clickToUploadDocument")}
+                      description={t("uploadClearPhotos")}
                       icon={activeTab === "1" ? "camera-outline" : "cloud-upload-outline"}
                       color={colors.accent}
                     />
@@ -397,11 +397,14 @@ const ScanScreen = () => {
             ) : (
               <View style={[styles.scanCardContent, { borderColor: colors.accent }]}>
                 <View style={styles.documentsHeader}>
-                  <Text style={[styles.documentsTitle, { color: colors.text }]}>{t('documents')} ({scannedDocuments.length})</Text>
+                  <Text style={[styles.documentsTitle, { color: colors.text }]}>
+                    {t("documents")} ({scannedDocuments.length})
+                  </Text>
                   <View style={styles.headerButtons}>
                     <TouchableOpacity
                       style={[styles.addButton, { backgroundColor: colors.accent }]}
                       onPress={activeTab === "1" ? handleScan : handleUpload}
+                      disabled={isUploading || isDeleting}
                     >
                       <Ionicons name="add" size={20} color="white" />
                     </TouchableOpacity>
@@ -429,8 +432,12 @@ const ScanScreen = () => {
                 </ScrollView>
 
                 <View style={styles.actionButtons}>
-                  <TouchableOpacity style={[styles.actionButton, { backgroundColor: colors.warning + "20" }]} onPress={handleDeleteAllDocuments}>
-                    <Text style={[styles.actionButtonText, { color: colors.warning }]}>{t('deleteAll')}</Text>
+                  <TouchableOpacity
+                    disabled={isUploading || isDeleting}
+                    style={[styles.actionButton, { backgroundColor: colors.warning + "20" }]}
+                    onPress={handleDeleteAllDocuments}
+                  >
+                    <Text style={[styles.actionButtonText, { color: colors.warning }]}>{t("deleteAll")}</Text>
                   </TouchableOpacity>
                   {!isAnalyzed ? (
                     <TouchableOpacity
@@ -438,11 +445,11 @@ const ScanScreen = () => {
                       onPress={handleAnalyzeDocuments}
                       disabled={isUploading}
                     >
-                      <Text style={[styles.actionButtonText, { color: "white" }]}>{isUploading ? t('analyzing') : t('analyze')}</Text>
+                      <Text style={[styles.actionButtonText, { color: "white" }]}>{isUploading ? t("analyzing") : t("analyze")}</Text>
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity style={[styles.actionButton, { backgroundColor: colors.success + "20" }]} onPress={handleSaveDocuments}>
-                      <Text style={[styles.actionButtonText, { color: colors.success }]}>{t('continue')}</Text>
+                      <Text style={[styles.actionButtonText, { color: colors.success }]}>{t("continue")}</Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -502,7 +509,7 @@ const ScanScreen = () => {
             <View style={[styles.inputWrapper, { backgroundColor: colors.background }]}>
               <TextInput
                 style={[styles.input, { color: colors.text }]}
-                placeholder={t('askQuestionsAboutDocuments')}
+                placeholder={t("askQuestionsAboutDocuments")}
                 placeholderTextColor={colors.hint}
                 value={inputText}
                 onChangeText={setInputText}

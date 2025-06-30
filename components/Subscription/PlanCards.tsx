@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import ThemedCard from "../ThemedCard";
-import ThemedButton from "../ThemedButton";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
+import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { StyleSheet, Text, View } from "react-native";
+import ThemedButton from "../ThemedButton";
+import ThemedCard from "../ThemedCard";
 
 interface PlanCardsProps {
   title: string;
@@ -22,6 +23,7 @@ const PlanCards = ({
   currentPlan,
 }: PlanCardsProps) => {
   const { colors } = useTheme();
+  const { t } = useTranslation("common");
   const renderFeatureItem = (text: string) => (
     <View style={styles.featureItem} key={text}>
       <Ionicons
@@ -45,7 +47,7 @@ const PlanCards = ({
 
       <Text style={[styles.priceText, { color: colors.text }]}>
         {price}
-        <Text style={[styles.monthText, { color: colors.hint }]}>/mo</Text>
+        <Text style={[styles.monthText, { color: colors.hint }]}>{t("perMonth")}</Text>
       </Text>
 
       {features.map((feature) => renderFeatureItem(feature))}

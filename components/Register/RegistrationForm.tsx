@@ -1,11 +1,9 @@
 import ThemedButton from "@/components/ThemedButton";
 import { useTheme } from "@/context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import BottomModal from "../Modal/BottomModal";
 import Title from "./Title";
 
 interface RegistrationFormProps {
@@ -26,21 +24,18 @@ interface RegistrationFormProps {
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, step, isLoading }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const [dateOfBirth, setDateOfBirth] = useState(new Date());
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [nationality, setNationality] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [tempDate, setTempDate] = useState(new Date());
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = () => {
     onSubmit({
-      dateOfBirth: dateOfBirth.toLocaleDateString("en-US"),
-      phoneNumber,
+      dateOfBirth: new Date().toLocaleDateString("en-US"),
+      phoneNumber: "",
       nationality,
       name,
       email,
@@ -49,89 +44,24 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
     });
   };
 
-  const onDateChange = (_event: any, selectedDate?: Date) => {
-    if (Platform.OS === "android") {
-      setShowDatePicker(false);
-      if (selectedDate) {
-        setDateOfBirth(selectedDate);
-      }
-    } else {
-      if (selectedDate) {
-        setTempDate(selectedDate);
-      }
-    }
-  };
-
-  const handleConfirmDate = () => {
-    setDateOfBirth(tempDate);
-    setShowDatePicker(false);
-  };
-
-  const handleCancelDate = () => {
-    setTempDate(dateOfBirth);
-    setShowDatePicker(false);
-  };
-
   const isStep2Valid = name && email && password;
 
   const renderStep1 = () => (
     <>
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>{t('dateOfBirth')}</Text>
-        <TouchableOpacity
-          style={[styles.input, styles.dateInput, { backgroundColor: colors.card }]}
-          onPress={() => {
-            setTempDate(dateOfBirth);
-            setShowDatePicker(true);
-          }}
-        >
-          <Text style={{ color: colors.text }}>{dateOfBirth.toLocaleDateString("en-US")}</Text>
-        </TouchableOpacity>
-
-        {Platform.OS === "ios" ? (
-          <BottomModal visible={showDatePicker} onClose={handleCancelDate} onConfirm={handleConfirmDate} title={t('selectDate')}>
-            <DateTimePicker
-              value={tempDate}
-              mode="date"
-              display="spinner"
-              onChange={onDateChange}
-              maximumDate={new Date()}
-              style={styles.datePicker}
-            />
-          </BottomModal>
-        ) : (
-          showDatePicker && <DateTimePicker value={dateOfBirth} mode="date" display="default" onChange={onDateChange} maximumDate={new Date()} />
-        )}
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>{t('phoneNumber')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("nationality")}</Text>
         <TextInput
           style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder={t('enterPhoneNumber')}
-          placeholderTextColor={colors.hint}
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-        />
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>{t('nationality')}</Text>
-        <TextInput
-          style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder={t('enterNationality')}
+          placeholder={t("enterNationality")}
           placeholderTextColor={colors.hint}
           value={nationality}
           onChangeText={setNationality}
         />
-        <Text style={[styles.label, { color: colors.hint, fontSize: 12, marginTop: 5 }]}>
-          {t('nationalityHint')}
-        </Text>
+        <Text style={[styles.label, { color: colors.hint, fontSize: 12, marginTop: 5 }]}>{t("nationalityHint")}</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <ThemedButton title={t('back')} onPress={() => setStep(0)} variant="secondary" />
-        <ThemedButton title={t('nextStep')} onPress={() => setStep(2)} style={styles.button} />
+        <ThemedButton title={t("back")} onPress={() => setStep(0)} variant="secondary" />
+        <ThemedButton title={t("nextStep")} onPress={() => setStep(2)} style={styles.button} />
       </View>
     </>
   );
@@ -139,10 +69,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
   const renderStep2 = () => (
     <>
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>{t('fullName')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("fullName")}</Text>
         <TextInput
           style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder={t('enterFullName')}
+          placeholder={t("enterFullName")}
           placeholderTextColor={colors.hint}
           value={name}
           onChangeText={setName}
@@ -150,10 +80,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>{t('email')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("email")}</Text>
         <TextInput
           style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder={t('enterEmail')}
+          placeholder={t("enterEmail")}
           placeholderTextColor={colors.hint}
           value={email}
           onChangeText={setEmail}
@@ -163,11 +93,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>{t('password')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("password")}</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             style={[styles.input, styles.passwordInput, { backgroundColor: colors.card, color: colors.text }]}
-            placeholder={t('createPassword')}
+            placeholder={t("createPassword")}
             placeholderTextColor={colors.hint}
             value={password}
             onChangeText={setPassword}
@@ -180,10 +110,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.formGroup}>
-        <Text style={[styles.label, { color: colors.text }]}>{t('aboutMe')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t("aboutMe")}</Text>
         <TextInput
           style={[styles.input, styles.bioInput, { backgroundColor: colors.card, color: colors.text }]}
-          placeholder={t('aboutMePlaceholder')}
+          placeholder={t("aboutMePlaceholder")}
           placeholderTextColor={colors.hint}
           value={bio}
           onChangeText={setBio}
@@ -195,8 +125,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
       </View>
 
       <View style={styles.buttonContainer}>
-        <ThemedButton title={t('back')} onPress={() => setStep(1)} variant="secondary" />
-        <ThemedButton title={t('completeRegistration')} onPress={handleSubmit} disabled={!isStep2Valid} style={styles.button} loading={isLoading} />
+        <ThemedButton title={t("back")} onPress={() => setStep(1)} variant="secondary" />
+        <ThemedButton title={t("completeRegistration")} onPress={handleSubmit} disabled={!isStep2Valid} style={styles.button} loading={isLoading} />
       </View>
     </>
   );
@@ -204,8 +134,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
   return (
     <View style={styles.container}>
       <Title
-        title={step === 1 ? t('personalInformation') : t('accountDetails')}
-        subtitle={step === 1 ? t('personalInfoSubtitle') : t('accountDetailsSubtitle')}
+        title={step === 1 ? t("personalInformation") : t("accountDetails")}
+        subtitle={step === 1 ? t("personalInfoSubtitle") : t("accountDetailsSubtitle")}
       />
 
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
@@ -236,9 +166,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 15,
     fontSize: 16,
-  },
-  dateInput: {
-    justifyContent: "center",
   },
   button: {
     flex: 1,

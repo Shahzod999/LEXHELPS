@@ -1,5 +1,6 @@
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 
 interface LocationState {
@@ -19,6 +20,7 @@ let globalState: LocationState = {
 let locationPromise: Promise<void> | null = null;
 
 export const useLocation = () => {
+  const { t } = useTranslation("common");
   const [state, setState] = useState<LocationState>(globalState);
 
   const getCurrentLocation = useCallback(async () => {
@@ -39,7 +41,7 @@ export const useLocation = () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
 
         if (status !== "granted") {
-          throw new Error("Доступ к геолокации запрещен");
+          throw new Error(t("locationPermissionDenied"));
         }
 
         const location = await Location.getCurrentPositionAsync({
@@ -61,17 +63,17 @@ export const useLocation = () => {
       } catch (error) {
         globalState = {
           ...globalState,
-          error: error instanceof Error ? error.message : "Ошибка получения геолокации",
+          error: error instanceof Error ? error.message : t("locationError"),
           loading: false,
         };
         setState(globalState);
-        Alert.alert("Ошибка", "Не удалось получить ваше местоположение");
+        Alert.alert(t("error"), t("unableToGetLocation"));
       }
     })();
 
     await locationPromise;
     locationPromise = null;
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     getCurrentLocation();
