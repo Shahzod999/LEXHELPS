@@ -21,5 +21,12 @@
   "cameraPermissionTitle": "Autorizzazione Fotocamera",
   "cameraPermissionDescription": "Lex utilizza la fotocamera per scansionare documenti legali, documenti di identità e altri documenti importanti.\n\nLe tue foto:\n• Vengono elaborate localmente sul dispositivo\n• Utilizzate solo per l'analisi dei documenti\n• Non salvate nella galleria senza il tuo consenso\n• Non condivise con terze parti\n\nLa fotocamera è necessaria per il riconoscimento del testo di qualità e un'assistenza legale accurata.",
   "allowCameraAccess": "Consenti Accesso alla Fotocamera",
-  "positionDocumentInFrame": "Posiziona il documento nella cornice"
+  "positionDocumentInFrame": "Posiziona il documento nella cornice",
+  "cameraPermissionDeniedMessage": "È necessario l'accesso alla fotocamera per scansionare i documenti. Consenti l'accesso per continuare.",
+  "cancel": "Annulla",
+  "openSettings": "Apri Impostazioni",
+  "requestingCameraPermission": "Richiesta autorizzazione fotocamera...",
+  "cameraAccessRequired": "Accesso alla Fotocamera Richiesto",
+  "cameraPermissionDeniedDescription": "Per scansionare i documenti, consenti l'accesso alla fotocamera nelle impostazioni del dispositivo.",
+  "goBack": "Indietro"
 } 

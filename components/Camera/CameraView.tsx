@@ -2,9 +2,9 @@ import { useTheme } from "@/context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { CameraType, CameraView, FlashMode, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface CameraProps {
   onPhotoTaken?: (uri: string) => void;
@@ -14,10 +14,50 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState<CameraType>("back");
   const [flash, setFlash] = useState<FlashMode>("off");
+  const [permissionDenied, setPermissionDenied] = useState(false);
   const { colors } = useTheme();
   const { t } = useTranslation("common");
   // Reference to the camera component to call takePictureAsync
   const cameraRef = useRef<CameraView>(null);
+
+  const showSettingsAlert = useCallback(() => {
+    Alert.alert(t("cameraPermissionTitle"), t("cameraPermissionDeniedMessage"), [
+      {
+        text: t("cancel"),
+        style: "cancel",
+      },
+      {
+        text: t("openSettings"),
+        onPress: () => Linking.openSettings(),
+      },
+    ]);
+  }, [t]);
+
+  // Automatically request permission when component mounts
+  useEffect(() => {
+    if (permission === null) {
+      // Permissions are still loading
+      return;
+    }
+
+    if (!permission.granted && !permission.canAskAgain && permissionDenied) {
+      // User has previously denied and can't ask again
+      return;
+    }
+
+    if (!permission.granted && permission.canAskAgain) {
+      // Request permission immediately without custom screen
+      requestPermission().then((result) => {
+        if (!result.granted) {
+          setPermissionDenied(true);
+          if (!result.canAskAgain) {
+            // User denied and selected "Don't ask again"
+            showSettingsAlert();
+          }
+        }
+      });
+    }
+  }, [permission, requestPermission, permissionDenied, showSettingsAlert]);
 
   const handleBack = () => {
     if (onPhotoTaken) {
@@ -72,22 +112,38 @@ const CameraViewComponent: React.FC<CameraProps> = ({ onPhotoTaken }) => {
     // Camera permissions are still loading
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Text style={styles.text}>{t("loadingCameraPermissions")}</Text>
+        <Text style={[styles.text, { color: colors.text }]}>{t("loadingCameraPermissions")}</Text>
       </View>
     );
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet
-    return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Text style={[styles.text, { color: colors.text }]}>{t("cameraPermissionTitle")}</Text>
-        <Text style={[styles.descriptionText, { color: colors.text }]}>{t("cameraPermissionDescription")}</Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>{t("allowCameraAccess")}</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    // Camera permissions are not granted
+    if (permission.canAskAgain) {
+      // Still can ask for permission - show loading state while auto-requesting
+      return (
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+          <Text style={[styles.text, { color: colors.text }]}>{t("requestingCameraPermission")}</Text>
+        </View>
+      );
+    } else {
+      // User has denied permission and can't ask again
+      return (
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+          <View style={styles.deniedContainer}>
+            <Ionicons name="camera-outline" size={64} color={colors.text} style={styles.deniedIcon} />
+            <Text style={[styles.text, { color: colors.text }]}>{t("cameraAccessRequired")}</Text>
+            <Text style={[styles.descriptionText, { color: colors.text }]}>{t("cameraPermissionDeniedDescription")}</Text>
+            <TouchableOpacity style={[styles.settingsButton, { backgroundColor: colors.accent }]} onPress={showSettingsAlert}>
+              <Text style={styles.settingsButtonText}>{t("openSettings")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.goBackButton} onPress={handleBack}>
+              <Text style={[styles.backButtonText, { color: colors.text }]}>{t("goBack")}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
   }
 
   return (
@@ -142,16 +198,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginBottom: 20,
-  },
-  permissionButton: {
-    backgroundColor: "#4285F4",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  permissionButtonText: {
-    fontSize: 16,
-    color: "white",
   },
   camera: {
     flex: 1,
@@ -279,5 +325,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginBottom: 20,
+  },
+  deniedContainer: {
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  deniedIcon: {
+    marginBottom: 20,
+  },
+  settingsButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  settingsButtonText: {
+    fontSize: 16,
+    color: "white",
+    fontWeight: "600",
+  },
+  goBackButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  backButtonText: {
+    fontSize: 16,
+    textDecorationLine: "underline",
   },
 });

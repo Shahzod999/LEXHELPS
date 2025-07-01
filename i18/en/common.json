@@ -21,5 +21,12 @@
   "cameraPermissionTitle": "Camera Permission",
   "cameraPermissionDescription": "Lex uses the camera to scan legal documents, IDs and other important papers.\n\nYour photos:\n• Are processed locally on device\n• Used only for document analysis\n• Not saved to gallery without your consent\n• Not shared with third parties\n\nCamera is required for quality text recognition and accurate legal assistance.",
   "allowCameraAccess": "Allow Camera Access",
-  "positionDocumentInFrame": "Position document in frame"
+  "positionDocumentInFrame": "Position document in frame",
+  "cameraPermissionDeniedMessage": "Camera access is needed to scan documents. Please allow access to continue.",
+  "cancel": "Cancel",
+  "openSettings": "Open Settings",
+  "requestingCameraPermission": "Requesting camera permission...",
+  "cameraAccessRequired": "Camera Access Required",
+  "cameraPermissionDeniedDescription": "To scan documents, please allow camera access in your device settings.",
+  "goBack": "Go Back"
 } 

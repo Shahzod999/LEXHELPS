@@ -21,5 +21,12 @@
   "cameraPermissionTitle": "カメラ権限",
   "cameraPermissionDescription": "Lexは法的文書、身分証明書、その他の重要な書類をスキャンするためにカメラを使用します。\n\nあなたの写真：\n• デバイス上でローカルに処理されます\n• 文書分析のみに使用されます\n• あなたの同意なしにギャラリーに保存されません\n• 第三者と共有されません\n\nカメラは高品質なテキスト認識と正確な法的支援に必要です。",
   "allowCameraAccess": "カメラアクセスを許可",
-  "positionDocumentInFrame": "フレーム内に文書を配置してください"
+  "positionDocumentInFrame": "フレーム内に文書を配置してください",
+  "cameraPermissionDeniedMessage": "文書をスキャンするにはカメラアクセスが必要です。続行するにはアクセスを許可してください。",
+  "cancel": "キャンセル",
+  "openSettings": "設定を開く",
+  "requestingCameraPermission": "カメラ権限を要求中...",
+  "cameraAccessRequired": "カメラアクセスが必要",
+  "cameraPermissionDeniedDescription": "文書をスキャンするには、デバイス設定でカメラアクセスを許可してください。",
+  "goBack": "戻る"
 } 

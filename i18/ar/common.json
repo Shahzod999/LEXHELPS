@@ -21,5 +21,12 @@
   "cameraPermissionTitle": "إذن الكاميرا",
   "cameraPermissionDescription": "يستخدم Lex الكاميرا لمسح الوثائق القانونية والهويات والأوراق المهمة الأخرى.\n\nصورك:\n• تتم معالجتها محلياً على الجهاز\n• تُستخدم فقط لتحليل الوثائق\n• لا تُحفظ في المعرض بدون موافقتك\n• لا تُشارك مع أطراف ثالثة\n\nالكاميرا مطلوبة للتعرف على النص بجودة عالية ومساعدة قانونية دقيقة.",
   "allowCameraAccess": "السماح بالوصول للكاميرا",
-  "positionDocumentInFrame": "ضع الوثيقة في الإطار"
+  "positionDocumentInFrame": "ضع الوثيقة في الإطار",
+  "cameraPermissionDeniedMessage": "الوصول للكاميرا مطلوب لمسح الوثائق. يرجى السماح بالوصول للمتابعة.",
+  "cancel": "إلغاء",
+  "openSettings": "فتح الإعدادات",
+  "requestingCameraPermission": "طلب إذن الكاميرا...",
+  "cameraAccessRequired": "الوصول للكاميرا مطلوب",
+  "cameraPermissionDeniedDescription": "لمسح الوثائق، يرجى السماح بالوصول للكاميرا في إعدادات جهازك.",
+  "goBack": "العودة"
 } 

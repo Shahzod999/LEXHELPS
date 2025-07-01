@@ -21,5 +21,12 @@
   "cameraPermissionTitle": "Permiso de Cámara",
   "cameraPermissionDescription": "Lex usa la cámara para escanear documentos legales, identificaciones y otros papeles importantes.\n\nTus fotos:\n• Se procesan localmente en el dispositivo\n• Se usan solo para análisis de documentos\n• No se guardan en la galería sin tu consentimiento\n• No se comparten con terceros\n\nLa cámara es necesaria para el reconocimiento de texto de calidad y asistencia legal precisa.",
   "allowCameraAccess": "Permitir Acceso a la Cámara",
-  "positionDocumentInFrame": "Posiciona el documento en el marco"
+  "positionDocumentInFrame": "Posiciona el documento en el marco",
+  "cameraPermissionDeniedMessage": "Se necesita acceso a la cámara para escanear documentos. Por favor, permite el acceso para continuar.",
+  "cancel": "Cancelar",
+  "openSettings": "Abrir Configuración",
+  "requestingCameraPermission": "Solicitando permiso de cámara...",
+  "cameraAccessRequired": "Acceso a la Cámara Requerido",
+  "cameraPermissionDeniedDescription": "Para escanear documentos, permite el acceso a la cámara en la configuración de tu dispositivo.",
+  "goBack": "Volver"
 } 

@@ -21,5 +21,12 @@
   "cameraPermissionTitle": "相机权限",
   "cameraPermissionDescription": "Lex使用相机扫描法律文件、身份证件和其他重要文件。\n\n您的照片：\n• 在设备本地处理\n• 仅用于文档分析\n• 未经您同意不会保存到相册\n• 不与第三方共享\n\n相机是高质量文本识别和准确法律协助所必需的。",
   "allowCameraAccess": "允许相机访问",
-  "positionDocumentInFrame": "将文档放置在框架中"
+  "positionDocumentInFrame": "将文档放置在框架中",
+  "cameraPermissionDeniedMessage": "扫描文档需要相机访问权限。请允许访问以继续。",
+  "cancel": "取消",
+  "openSettings": "打开设置",
+  "requestingCameraPermission": "正在请求相机权限...",
+  "cameraAccessRequired": "需要相机访问权限",
+  "cameraPermissionDeniedDescription": "要扫描文档，请在设备设置中允许相机访问。",
+  "goBack": "返回"
 } 

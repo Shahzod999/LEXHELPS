@@ -21,5 +21,12 @@
   "cameraPermissionTitle": "카메라 권한",
   "cameraPermissionDescription": "Lex는 법적 문서, 신분증 및 기타 중요한 서류를 스캔하기 위해 카메라를 사용합니다.\n\n귀하의 사진:\n• 기기에서 로컬로 처리됩니다\n• 문서 분석용으로만 사용됩니다\n• 귀하의 동의 없이 갤러리에 저장되지 않습니다\n• 제3자와 공유되지 않습니다\n\n카메라는 고품질 텍스트 인식과 정확한 법적 지원을 위해 필요합니다.",
   "allowCameraAccess": "카메라 접근 허용",
-  "positionDocumentInFrame": "프레임 안에 문서를 위치시키세요"
+  "positionDocumentInFrame": "프레임 안에 문서를 위치시키세요",
+  "cameraPermissionDeniedMessage": "문서를 스캔하려면 카메라 접근이 필요합니다. 계속하려면 접근을 허용해 주세요.",
+  "cancel": "취소",
+  "openSettings": "설정 열기",
+  "requestingCameraPermission": "카메라 권한 요청 중...",
+  "cameraAccessRequired": "카메라 접근 필요",
+  "cameraPermissionDeniedDescription": "문서를 스캔하려면 기기 설정에서 카메라 접근을 허용해 주세요.",
+  "goBack": "돌아가기"
 } 

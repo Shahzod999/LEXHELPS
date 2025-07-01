@@ -21,5 +21,12 @@
   "cameraPermissionTitle": "Autorisation de Caméra",
   "cameraPermissionDescription": "Lex utilise la caméra pour scanner les documents juridiques, les pièces d'identité et autres papiers importants.\n\nVos photos :\n• Sont traitées localement sur l'appareil\n• Utilisées uniquement pour l'analyse de documents\n• Non sauvegardées dans la galerie sans votre consentement\n• Non partagées avec des tiers\n\nLa caméra est nécessaire pour une reconnaissance de texte de qualité et une assistance juridique précise.",
   "allowCameraAccess": "Autoriser l'Accès à la Caméra",
-  "positionDocumentInFrame": "Positionnez le document dans le cadre"
+  "positionDocumentInFrame": "Positionnez le document dans le cadre",
+  "cameraPermissionDeniedMessage": "L'accès à la caméra est nécessaire pour scanner les documents. Veuillez autoriser l'accès pour continuer.",
+  "cancel": "Annuler",
+  "openSettings": "Ouvrir les Paramètres",
+  "requestingCameraPermission": "Demande d'autorisation de caméra...",
+  "cameraAccessRequired": "Accès à la Caméra Requis",
+  "cameraPermissionDeniedDescription": "Pour scanner les documents, veuillez autoriser l'accès à la caméra dans les paramètres de votre appareil.",
+  "goBack": "Retour"
 } 
