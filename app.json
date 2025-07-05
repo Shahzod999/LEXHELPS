@@ -100,7 +100,9 @@
       }
     },
     "extra": {
-      "router": {},
+      "router": {
+        "origin": "https://lexhelps.com"
+      },
       "eas": {
         "projectId": "890d9bd2-badc-41f2-b5ea-100f99d5d35b"
       }
