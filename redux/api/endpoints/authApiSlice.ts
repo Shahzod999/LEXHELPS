@@ -80,7 +80,31 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
     }),
+
+    forgotPassword: builder.mutation<{ message: string }, { email: string }>({
+      query: (credentials) => ({
+        url: "/users/forgot-password",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+
+    resetPassword: builder.mutation<{ message: string }, { token: string; password: string }>({
+      query: (credentials) => ({
+        url: "/users/reset-password",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetProfileQuery, useUpdateProfileMutation, useDeleteProfileMutation } = authApiSlice;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useDeleteProfileMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} = authApiSlice;

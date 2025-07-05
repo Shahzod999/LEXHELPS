@@ -87,8 +87,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, setStep, 
           placeholderTextColor={colors.hint}
           value={email}
           onChangeText={setEmail}
-          keyboardType="email-address"
           autoCapitalize="none"
+          keyboardType="email-address"
+          autoComplete="email"
+          inputMode="email"
         />
       </View>
 

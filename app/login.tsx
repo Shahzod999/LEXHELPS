@@ -1,18 +1,13 @@
 import { useLoginMutation } from "@/redux/api/endpoints/authApiSlice";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import ThemedButton from "../components/ThemedButton";
 import { useTheme } from "../context/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 export default function LoginScreen() {
+  const { t } = useTranslation("auth");
   const [login, { isLoading }] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,19 +30,15 @@ export default function LoginScreen() {
       router.replace("/(tabs)");
     } catch (error) {
       console.error("Error logging in:", error);
-      setError("Invalid email or password");
+      setError(t("invalidEmailPassword"));
     }
   };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ width: "90%" }}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ width: "90%" }}>
         <View style={[styles.loginContainer, { backgroundColor: colors.card }]}>
-          {error && (
-            <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
-          )}
+          {error && <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>}
           <Text style={[styles.title, { color: colors.text }]}>Login</Text>
 
           <TextInput
@@ -83,6 +74,10 @@ export default function LoginScreen() {
             secureTextEntry
           />
 
+          <TouchableOpacity style={styles.forgotPasswordButton} onPress={() => router.push("/forgot-password")}>
+            <Text style={[styles.forgotPasswordText, { color: colors.accent }]}>{t("forgotPassword")}</Text>
+          </TouchableOpacity>
+
           <ThemedButton
             title="Login"
             onPress={handleLogin}
@@ -93,11 +88,9 @@ export default function LoginScreen() {
           />
 
           <Text style={styles.registerText}>
-            Don&apos;t have an account?{" "}
-            <Text
-              style={{ color: colors.accent, fontWeight: "bold" }}
-              onPress={() => router.push("/register")}>
-              Register
+            {t("dontHaveAccount")}{" "}
+            <Text style={{ color: colors.accent, fontWeight: "bold" }} onPress={() => router.push("/register")}>
+              {t("register")}
             </Text>
           </Text>
         </View>
@@ -138,5 +131,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
     textAlign: "center",
     color: "#888",
+  },
+  forgotPasswordButton: {
+    alignSelf: "flex-end",
+    marginTop: 8,
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    fontWeight: "600",
   },
 });
