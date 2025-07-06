@@ -91,7 +91,7 @@ const ChatScreen = () => {
   const handleSwipeGesture = (event: any) => {
     if (event.nativeEvent.state === State.END) {
       const { translationX, velocityX } = event.nativeEvent;
-      if (translationX > 50 && velocityX > 0) {
+      if (translationX > 75 && velocityX > 500) {
         setChatHistoryVisible(true);
       }
     }
@@ -101,6 +101,10 @@ const ChatScreen = () => {
     setChatHistoryVisible(!chatHistoryVisible);
   };
 
+  const handleChatHistoryClose = () => {
+    setChatHistoryVisible(false);
+  };
+
   const handleSelectChat = (chatId: string) => {
     if (isConnected && chatId) {
       setSelectedChatId(chatId);
@@ -108,11 +112,11 @@ const ChatScreen = () => {
   };
 
   const getConnectionStatus = () => {
-    if (isConnecting) return t('connecting');
-    if (!isConnected) return t('disconnected');
-    if (!selectedChatId) return t('readyToChat');
-    if (!selectedChat.isSubscribed) return t('subscribingToChat');
-    return t('connected');
+    if (isConnecting) return t("connecting");
+    if (!isConnected) return t("disconnected");
+    if (!selectedChatId) return t("readyToChat");
+    if (!selectedChat.isSubscribed) return t("subscribingToChat");
+    return t("connected");
   };
 
   const getConnectionColor = () => {
@@ -127,7 +131,7 @@ const ChatScreen = () => {
   if (finalMessages.length === 0) {
     finalMessages.push({
       _id: "welcome",
-      content: t('aiWelcomeMessage'),
+      content: t("aiWelcomeMessage"),
       role: "assistant",
       createdAt: new Date().toISOString(),
     });
@@ -148,18 +152,17 @@ const ChatScreen = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <PanGestureHandler onHandlerStateChange={handleSwipeGesture}>
           <ScrollView contentContainerStyle={styles.chatContent}>
-            <Header
-              title={t('askLexTitle')}
-              subtitle={t('askLexSubtitle')}
-              secondIcon="chatbubbles"
-              secondIconFunction={handleChatHistoryToggle}
-            />
+            <Header title={t("askLexTitle")} subtitle={t("askLexSubtitle")} secondIcon="chatbubbles" secondIconFunction={handleChatHistoryToggle} />
 
             {/* Connection Status Indicator */}
             <View style={styles.statusContainer}>
               <View style={[styles.statusIndicator, { backgroundColor: getConnectionColor() }]} />
               <Text style={[styles.statusText, { color: colors.text }]}>{getConnectionStatus()}</Text>
-              {selectedChatId && <Text style={[styles.statusText, { color: colors.text, marginLeft: 8 }]}>• {t('chatLabel')} {selectedChatId.slice(-6)}</Text>}
+              {selectedChatId && (
+                <Text style={[styles.statusText, { color: colors.text, marginLeft: 8 }]}>
+                  • {t("chatLabel")} {selectedChatId.slice(-6)}
+                </Text>
+              )}
             </View>
 
             <View style={styles.chatContainer}>
@@ -194,7 +197,7 @@ const ChatScreen = () => {
           <View style={[styles.inputWrapper, { backgroundColor: colors.background }]}>
             <TextInput
               style={[styles.input, { color: colors.text }]}
-              placeholder={t('chatPlaceholder')}
+              placeholder={t("chatPlaceholder")}
               placeholderTextColor={colors.hint}
               value={inputText}
               onChangeText={setInputText}
@@ -213,7 +216,7 @@ const ChatScreen = () => {
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
-        <ChatHistoryMenu visible={chatHistoryVisible} onClose={() => setChatHistoryVisible(false)} onSelectChat={handleSelectChat} />
+        <ChatHistoryMenu visible={chatHistoryVisible} onClose={handleChatHistoryClose} onSelectChat={handleSelectChat} />
       </SafeAreaView>
     </View>
   );

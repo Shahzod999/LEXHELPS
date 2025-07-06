@@ -3,7 +3,7 @@ import { useCreateNewChatMutation, useDeleteChatMutation, useGetUserChatsQuery }
 import { ChatHistoryType } from "@/types/chat";
 import { formatDate } from "@/utils/formatDate";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -29,6 +29,8 @@ interface ChatHistoryMenuProps {
 
 export default function ChatHistoryMenu({ visible, onClose, onSelectChat }: ChatHistoryMenuProps) {
   const { colors } = useTheme();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const menuWidth = screenWidth * 0.85;
   const slideAnim = useRef(new Animated.Value(-menuWidth)).current;
@@ -37,20 +39,53 @@ export default function ChatHistoryMenu({ visible, onClose, onSelectChat }: Chat
   const [deleteChat, { isLoading: isDeleting }] = useDeleteChatMutation();
   const [createNewChat, { isLoading: isCreating }] = useCreateNewChatMutation();
 
+  // Handle visibility changes with proper animations
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [fadeAnim, slideAnim, menuWidth]);
+    if (visible) {
+      // Show modal first, then animate
+      setModalVisible(true);
+      setIsAnimating(true);
+      
+      // Reset animation values to start position
+      slideAnim.setValue(-menuWidth);
+      fadeAnim.setValue(0);
+      
+      // Animate in
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        setIsAnimating(false);
+      });
+    } else if (modalVisible) {
+      // Animate out
+      setIsAnimating(true);
+      
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: -menuWidth,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        setModalVisible(false);
+        setIsAnimating(false);
+      });
+    }
+  }, [visible, modalVisible, slideAnim, fadeAnim, menuWidth]);
 
   const handleSelectChat = (chatId: string) => {
     onSelectChat?.(chatId);
@@ -101,10 +136,10 @@ export default function ChatHistoryMenu({ visible, onClose, onSelectChat }: Chat
     </SwipeDelete>
   );
 
-  if (!visible) return null;
+  if (!modalVisible) return null;
 
   return (
-    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
+    <Modal visible={modalVisible} transparent animationType="none" onRequestClose={onClose}>
       <View style={styles.modalContainer}>
         {(isLoading || isDeleting || isCreating) && <Loading />}
         <TouchableWithoutFeedback onPress={onClose}>
@@ -113,7 +148,7 @@ export default function ChatHistoryMenu({ visible, onClose, onSelectChat }: Chat
               styles.backdrop,
               {
                 opacity: fadeAnim,
-                backgroundColor: colors.background,
+                backgroundColor: colors.background + "80",
               },
             ]}
           />

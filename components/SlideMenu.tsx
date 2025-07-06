@@ -56,6 +56,7 @@ export default function SlideMenu() {
     { code: "ko", name: "🇰🇷 한국어" },
     { code: "ar", name: "🇸🇦 العربية" },
     { code: "hi", name: "🇮🇳 हिन्दी" },
+    { code: "uz", name: "🇺🇿 O'zbekcha" },
   ];
 
   // Найти текущий язык в списке
@@ -149,7 +150,7 @@ export default function SlideMenu() {
               <View style={styles.profileHeader}>
                 <Image
                   source={{
-                    uri: getValidatedUrl(memoizedProfile?._id, memoizedProfile?.profilePicture),
+                    uri: getValidatedUrl(memoizedProfile?._id, memoizedProfile?.profilePicture) || require("@/assets/images/icon.png"),
                   }}
                   style={styles.avatar}
                 />

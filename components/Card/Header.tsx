@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,17 +17,11 @@ const Header = ({
   return (
     <View>
       <View style={styles.iconContainer}>
-        <Ionicons
-          name="shield-half-outline"
-          size={30}
-          style={[styles.icon, { backgroundColor: colors.accent }]}
-        />
+        <Image source={require("@/assets/images/icon.png")} style={styles.imageIcon} />
         <Text style={[styles.iconText, { color: colors.text }]}>Lex</Text>
 
         {secondIcon && (
-          <TouchableOpacity
-            style={[styles.historyButton, { backgroundColor: colors.card }]}
-            onPress={secondIconFunction}>
+          <TouchableOpacity style={[styles.historyButton, { backgroundColor: colors.card }]} onPress={secondIconFunction}>
             <Ionicons name={secondIcon} size={24} color={colors.text} />
           </TouchableOpacity>
         )}
@@ -48,10 +42,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 10,
   },
-  icon: {
-    padding: 10,
+  imageIcon: {
+    width: 45,
+    height: 45,
     borderRadius: 10,
-    color: "#fff",
   },
   iconText: {
     fontSize: 20,

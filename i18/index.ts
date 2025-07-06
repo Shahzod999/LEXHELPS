@@ -25,6 +25,8 @@ import ruAuth from "./ru/auth.json";
 import ruCommon from "./ru/common.json";
 import zhAuth from "./zh/auth.json";
 import zhCommon from "./zh/common.json";
+import uzAuth from "./uz/auth.json";
+import uzCommon from "./uz/common.json";
 
 const resources = {
   en: {
@@ -74,6 +76,10 @@ const resources = {
   hi: {
     auth: hiAuth,
     common: hiCommon,
+  },
+  uz: {
+    auth: uzAuth,
+    common: uzCommon,
   },
 };
 

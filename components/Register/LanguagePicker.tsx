@@ -23,6 +23,7 @@ const languages = [
   { code: "ko", name: "한국어", flag: "🇰🇷" },
   { code: "ar", name: "العربية", flag: "🇸🇦" },
   { code: "hi", name: "हिन्दी", flag: "🇮🇳" },
+  { code: "uz", name: "O'zbekcha", flag: "🇺🇿" },
 ];
 
 const LanguagePicker: React.FC<LanguagePickerProps> = ({ selectedLanguage, onLanguageSelect }) => {

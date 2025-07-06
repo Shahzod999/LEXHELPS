@@ -9,15 +9,22 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "scheme": "LexHelps",
       "supportsTablet": true,
       "bundleIdentifier": "com.cdlcarolinas.lex",
+      "associatedDomains": ["applinks:lexhelps.com"],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSLocationWhenInUseUsageDescription": "This app uses your location to provide relevant news in your region.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses your location to provide relevant news in your region.",
         "NSCameraUsageDescription": "Lex uses the camera to scan legal documents, identification cards, and other important papers. Your photos are processed locally and used only for document analysis.",
         "NSPhotoLibraryUsageDescription": "Lex uses gallery access so you can select and upload photos or documents from your device.",
-        "CFBundleAllowMixedLocalizations": true
+        "CFBundleAllowMixedLocalizations": true,
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["LexHelps"]
+          }
+        ]
       }
     },
     "android": {
@@ -27,6 +34,19 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.cdlcarolinas.lex",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "LexHelps",
+              "host": "lexhelps.com",
+              "pathPrefix": "/reset-password"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
