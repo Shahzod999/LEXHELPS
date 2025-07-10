@@ -49,8 +49,32 @@ Join our community of developers creating universal apps.
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
-
-
 npx expo prebuild
 
-cd ios open appName.xcworkspace 
+cd ios open appName.xcworkspace
+
+cd android
+
+# Создание keystore (делается один раз)
+
+keytool -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+
+password: lexai2025
+
+What is your first and last name?
+[Unknown]: Shahzod Ibragimov
+What is the name of your organizational unit?
+[Unknown]: lexai
+What is the name of your organization?
+[Unknown]: lexai
+What is the name of your City or Locality?
+[Unknown]: Germany
+What is the name of your State or Province?
+[Unknown]: Nordrhein-Westfalen
+What is the two-letter country code for this unit?
+[Unknown]: uz
+Is CN=Shahzod Ibragimov, OU=lexai, O=lexai, L=Germany, ST=Nordrhein-Westfalen, C=uz correct?
+[no]: yes
+Generating 2 048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 10 000 days
+for: CN=Shahzod Ibragimov, OU=lexai, O=lexai, L=Germany, ST=Nordrhein-Westfalen, C=uz
+[Storing my-upload-key.keystore]

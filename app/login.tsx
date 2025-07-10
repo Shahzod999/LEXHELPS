@@ -5,6 +5,8 @@ import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableO
 import ThemedButton from "../components/ThemedButton";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
+import Logo from "@/components/Logo";
+import LogRegOptions from "@/components/LogRegOprions";
 
 export default function LoginScreen() {
   const { t } = useTranslation("auth");
@@ -36,6 +38,7 @@ export default function LoginScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Logo />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ width: "90%" }}>
         <View style={[styles.loginContainer, { backgroundColor: colors.card }]}>
           {error && <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>}
@@ -87,6 +90,8 @@ export default function LoginScreen() {
             style={{ marginTop: 15 }}
           />
 
+          <LogRegOptions />
+
           <Text style={styles.registerText}>
             {t("dontHaveAccount")}{" "}
             <Text style={{ color: colors.accent, fontWeight: "bold" }} onPress={() => router.push("/register")}>
@@ -128,7 +133,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   registerText: {
-    marginTop: 15,
     textAlign: "center",
     color: "#888",
   },

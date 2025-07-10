@@ -6,6 +6,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableO
 import { Ionicons } from "@expo/vector-icons";
 import ThemedButton from "../components/ThemedButton";
 import { useTheme } from "../context/ThemeContext";
+import Logo from "@/components/Logo";
 
 export default function ResetPasswordScreen() {
   const { t } = useTranslation("auth");
@@ -51,6 +52,8 @@ export default function ResetPasswordScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Logo />
+
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ width: "90%" }}>
         <View style={[styles.resetPasswordContainer, { backgroundColor: colors.card }]}>
           <TouchableOpacity style={[styles.backButton, { backgroundColor: colors.accent + "20" }]} onPress={() => router.back()}>
