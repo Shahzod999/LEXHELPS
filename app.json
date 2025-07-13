@@ -39,14 +39,9 @@
           "action": "VIEW",
           "data": [
             {
-              "scheme": "https",
+              "scheme": "LexHelps",
               "host": "lexhelps.com",
               "pathPrefix": "/reset-password"
-            },
-            {
-              "scheme": "https",
-              "host": "lexhelps.com",
-              "pathPrefix": "/"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
@@ -110,8 +105,7 @@
           "photosPermission": "Photo access is needed so you can upload documents and images from your gallery."
         }
       ],
-      "expo-web-browser",
-      ["expo-linking", { "customScheme": "LexHelps" }]
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
