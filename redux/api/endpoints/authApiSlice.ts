@@ -10,6 +10,10 @@ interface LoginCredentials {
   password: string;
 }
 
+interface GoogleAuthCredentials {
+  accessToken: string;
+}
+
 export const authApiSlice = apiSlice.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
@@ -45,6 +49,25 @@ export const authApiSlice = apiSlice.injectEndpoints({
           await saveTokenToSecureStore(data.token);
         } catch (error) {
           console.error("Error saving token:", error);
+        }
+      },
+    }),
+
+    googleAuth: builder.mutation<LoginResponseType, GoogleAuthCredentials>({
+      query: (credentials) => ({
+        url: "/users/google-auth",
+        method: "POST",
+        body: credentials,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log("Google auth success:", data);
+
+          dispatch(setToken(data.token));
+          await saveTokenToSecureStore(data.token);
+        } catch (error) {
+          console.error("Error saving Google auth token:", error);
         }
       },
     }),
@@ -102,6 +125,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useGoogleAuthMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
   useDeleteProfileMutation,

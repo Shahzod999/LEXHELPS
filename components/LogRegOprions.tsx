@@ -1,40 +1,92 @@
-import { StyleSheet, Text, View, TouchableOpacity, Platform } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Platform, Alert } from "react-native";
 import React, { useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
-import { GoogleSignin, isSuccessResponse, isErrorWithCode, statusCodes } from "@react-native-google-signin/google-signin";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import { useGoogleAuthMutation } from "@/redux/api/endpoints/authApiSlice";
+import { useRouter } from "expo-router";
+
+const clientId = "1076868398534-5j60979vc3md1hsqo0511pa75qm2eij6.apps.googleusercontent.com";
+const iosClientId = "1076868398534-5j60979vc3md1hsqo0511pa75qm2eij6.apps.googleusercontent.com";
+const webClientId = "1076868398534-162b2goa1od6nbag2f82kl9vh1891ugn.apps.googleusercontent.com";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const LogRegOptions = () => {
   const { colors } = useTheme();
+  const router = useRouter();
+  const [googleAuth, { isLoading }] = useGoogleAuthMutation();
 
-  useEffect(() => {
-    GoogleSignin.configure({
-      iosClientId: "1076868398534-5j60979vc3md1hsqo0511pa75qm2eij6.apps.googleusercontent.com",
-      webClientId: "1076868398534-162b2goa1od6nbag2f82kl9vh1891ugn.apps.googleusercontent.com",
-      profileImageSize: 150,
-    });
-  }, []);
+  const config = {
+    clientId,
+    iosClientId,
+    webClientId,
+  };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const response = await GoogleSignin.signIn();
-      if (isSuccessResponse(response)) {
-        const { idToken, user } = response.data;
-        const { name, email, photo } = user;
-        console.log(name, email, photo);
+  const [request, response, promptAsync] = Google.useAuthRequest(config);
+
+  const handleGoogleAuth = async () => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      const accessToken = authentication?.accessToken;
+      
+      if (accessToken) {
+        try {
+          console.log("Sending access token to server:", accessToken);
+          const result = await googleAuth({ accessToken }).unwrap();
+          console.log("Google auth result:", result);
+          
+          Alert.alert(
+            "Успех!",
+            "Вы успешно авторизовались через Google",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  // Перенаправляем на главную страницу
+                  router.replace("/(tabs)");
+                }
+              }
+            ]
+          );
+        } catch (error: any) {
+          console.error("Google auth error:", error);
+          Alert.alert(
+            "Ошибка",
+            error?.data?.message || "Произошла ошибка при авторизации через Google"
+          );
+        }
       }
-    } catch (error) {
-      console.log(error);
+    } else if (response?.type === "error") {
+      console.error("Google auth error:", response.error);
+      Alert.alert("Ошибка", "Не удалось авторизоваться через Google");
     }
   };
+
+  useEffect(() => {
+    if (response) {
+      handleGoogleAuth();
+    }
+  }, [response]);
 
   return (
     <View style={styles.container}>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={[styles.button, { backgroundColor: colors.darkBackground }]} activeOpacity={0.8} onPress={handleGoogleSignIn}>
+        <TouchableOpacity 
+          onPress={() => promptAsync()} 
+          style={[
+            styles.button, 
+            { backgroundColor: colors.darkBackground },
+            isLoading && styles.buttonDisabled
+          ]} 
+          activeOpacity={0.8}
+          disabled={isLoading}
+        >
           <Ionicons name="logo-google" size={20} color="#3596ea" />
-          <Text style={[styles.buttonText, { color: colors.text }]}>Google</Text>
+          <Text style={[styles.buttonText, { color: colors.text }]}>
+            {isLoading ? "Загрузка..." : "Google"}
+          </Text>
         </TouchableOpacity>
 
         {Platform.OS === "ios" && (
@@ -67,6 +119,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     flex: 1,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     fontSize: 15,
