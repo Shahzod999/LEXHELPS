@@ -3,6 +3,7 @@ import { useTheme } from "@/context/ThemeContext";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import LogRegOptions from "../LogRegOprions";
 import Title from "./Title";
 
 interface LanguagePickerProps {
@@ -56,6 +57,10 @@ const LanguagePicker: React.FC<LanguagePickerProps> = ({ selectedLanguage, onLan
           </TouchableOpacity>
         ))}
       </ScrollView>
+      <View style={styles.logRegOptionsContainer}>
+        <Text style={[styles.logRegOptionsText, { color: colors.hint }]}>{t("orTryWith")}</Text>
+        <LogRegOptions />
+      </View>
     </View>
   );
 };
@@ -97,5 +102,12 @@ const styles = StyleSheet.create({
   checkmark: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  logRegOptionsContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  logRegOptionsText: {
+    fontSize: 16,
   },
 });

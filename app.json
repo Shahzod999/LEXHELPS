@@ -105,7 +105,15 @@
           "photosPermission": "Photo access is needed so you can upload documents and images from your gallery."
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.1076868398534-5j60979vc3md1hsqo0511pa75qm2eij6",
+          "iosClientId": "1076868398534-5j60979vc3md1hsqo0511pa75qm2eij6.apps.googleusercontent.com",
+          "webClientId": "1076868398534-162b2goa1od6nbag2f82kl9vh1891ugn.apps.googleusercontent.com"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
