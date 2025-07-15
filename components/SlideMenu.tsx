@@ -24,6 +24,9 @@ import {
 } from "react-native";
 import { useMenu } from "../context/MenuContext";
 import { useTheme } from "../context/ThemeContext";
+import { useUpdateProfileMutation } from "@/redux/api/endpoints/authApiSlice";
+import { Loading } from "./common/LoadingScreen";
+import { useToast } from "@/context/ToastContext";
 
 export default function SlideMenu() {
   const { t } = useTranslation();
@@ -39,9 +42,10 @@ export default function SlideMenu() {
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const [legalDropdownOpen, setLegalDropdownOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(menuVisible);
-
+  const [updateProfile, { isLoading: isUpdatingProfile }] = useUpdateProfileMutation();
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const { showError } = useToast();
 
   const languages = [
     { code: "en", name: "🇬🇧 English" },
@@ -118,6 +122,14 @@ export default function SlideMenu() {
     router.push(route as any);
   };
 
+  const handleChangeProfileLanguage = async (languageCode: string) => {
+    try {
+      await updateProfile({ language: languageCode }).unwrap();
+    } catch (error) {
+      showError(t("errorUpdatingProfile"));
+    }
+  };
+
   // Use the internal visibility state instead of menuVisible for rendering
   if (!menuVisible && !isVisible) {
     return null;
@@ -125,6 +137,7 @@ export default function SlideMenu() {
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={hideMenu}>
+      {isUpdatingProfile && <Loading />}
       <View style={styles.modalContainer}>
         <TouchableWithoutFeedback onPress={hideMenu}>
           <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]} />
@@ -231,6 +244,7 @@ export default function SlideMenu() {
                         onPress={() => {
                           changeLanguage(language.code);
                           setLanguageDropdownOpen(false);
+                          handleChangeProfileLanguage(language.code);
                         }}
                       >
                         <Text
