@@ -4,6 +4,7 @@ import HomeCard from "@/components/Card/HomeCard";
 import { Loading } from "@/components/common/LoadingScreen";
 import ToggleTabsRN from "@/components/ToggleTabs/ToggleTabsRN";
 import { useChat, useChatById } from "@/context/ChatContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { useDeleteDocumentMutation, useUploadDocumentMutation } from "@/redux/api/endpoints/documentApiSlice";
@@ -53,6 +54,7 @@ const ScanScreen = () => {
   const [uploadProgress, setUploadProgress] = useState<string>("");
   const [documentChatId, setDocumentChatId] = useState<string>("");
   const user = useAppSelector(selectUser);
+  const { currentLanguage } = useLanguage();
 
   const [uploadDocument, { isLoading: isUploading }] = useUploadDocumentMutation();
   const [deleteDocument, { isLoading: isDeleting }] = useDeleteDocumentMutation();
@@ -129,7 +131,7 @@ const ScanScreen = () => {
       const documentNames = documents.map((doc) => doc.name || getDocumentTypeName(doc.type)).join(", ");
 
       formData.append("title", documentNames);
-      formData.append("language", user?.language || "en");
+      formData.append("language", currentLanguage || "en");
 
       setUploadProgress(t("uploadingAndAnalyzing"));
       const response = await uploadDocument(formData).unwrap();
