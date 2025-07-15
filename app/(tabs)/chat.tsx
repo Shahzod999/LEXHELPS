@@ -4,7 +4,7 @@ import { useChat, useChatById } from "@/context/ChatContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useGetUserOneChatQuery } from "@/redux/api/endpoints/chatApiSlice";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -37,6 +37,7 @@ const ChatScreen = () => {
   const [inputText, setInputText] = useState("");
   const [chatHistoryVisible, setChatHistoryVisible] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string>("");
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const { data: currentChatData, isLoading: isLoadingChat } = useGetUserOneChatQuery(selectedChatId || "", {
     refetchOnMountOrArgChange: true,
@@ -81,11 +82,19 @@ const ChatScreen = () => {
 
   const displayMessages = getDisplayMessages();
 
+  // Автоматическая прокрутка к новым сообщениям
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+  };
+
   const handleSendMessage = () => {
     if (inputText.trim() === "" || !isConnected || !selectedChatId || !selectedChat.isSubscribed) return;
 
     selectedChat.sendMessage(inputText);
     setInputText("");
+    scrollToBottom();
   };
 
   const handleSwipeGesture = (event: any) => {
@@ -147,11 +156,18 @@ const ChatScreen = () => {
     });
   }
 
+  // Автоматическая прокрутка при изменении сообщений
+  useEffect(() => {
+    if (finalMessages.length > 0) {
+      scrollToBottom();
+    }
+  }, [finalMessages.length, selectedChat.streamingMessage, selectedChat.isTyping]);
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView style={{ flex: 1 }}>
         <PanGestureHandler onHandlerStateChange={handleSwipeGesture}>
-          <ScrollView contentContainerStyle={styles.chatContent}>
+          <ScrollView ref={scrollViewRef} contentContainerStyle={styles.chatContent} showsVerticalScrollIndicator={false}>
             <Header title={t("askLexTitle")} subtitle={t("askLexSubtitle")} secondIcon="chatbubbles" secondIconFunction={handleChatHistoryToggle} />
 
             {/* Connection Status Indicator */}

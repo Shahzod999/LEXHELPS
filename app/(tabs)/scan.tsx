@@ -13,7 +13,7 @@ import { selectUser } from "@/redux/features/userSlice";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -55,6 +55,7 @@ const ScanScreen = () => {
   const [documentChatId, setDocumentChatId] = useState<string>("");
   const user = useAppSelector(selectUser);
   const { currentLanguage } = useLanguage();
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const [uploadDocument, { isLoading: isUploading }] = useUploadDocumentMutation();
   const [deleteDocument, { isLoading: isDeleting }] = useDeleteDocumentMutation();
@@ -88,6 +89,13 @@ const ScanScreen = () => {
 
     return messages;
   }, [documentChat.messages, documentChat.isTyping, documentChat.streamingMessage]);
+
+  // Автоматическая прокрутка к новым сообщениям
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+  };
 
   const sanitizeFileName = (fileName: string, maxLength: number = 50): string => {
     if (!fileName) return `document_${Date.now()}`;
@@ -262,6 +270,7 @@ const ScanScreen = () => {
     console.log(`📄 Sending message to document chat: ${documentChatId}`);
     documentChat.sendMessage(inputText);
     setInputText("");
+    scrollToBottom();
   };
 
   const handleDeleteDocument = async (documentToDelete: ScannedDocument) => {
@@ -354,6 +363,13 @@ const ScanScreen = () => {
     }
   }, [documentChatId, documentChat.isSubscribed]);
 
+  // Автоматическая прокрутка при изменении сообщений
+  useEffect(() => {
+    if (displayMessages.length > 0 && documentChatId && isAnalyzed) {
+      scrollToBottom();
+    }
+  }, [displayMessages.length, documentChat.streamingMessage, documentChat.isTyping, documentChatId, isAnalyzed]);
+
   if (showCamera) {
     return <CameraView onPhotoTaken={handlePhotoTaken} />;
   }
@@ -377,7 +393,11 @@ const ScanScreen = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {isDeleting && <Loading />}
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.chatContent}>
+        <ScrollView 
+          ref={scrollViewRef}
+          contentContainerStyle={styles.chatContent}
+          showsVerticalScrollIndicator={false}
+        >
           <Header title={t("documentScanner")} subtitle={t("scanAnalyzeDocuments")} />
 
           <View style={styles.scanCard}>
