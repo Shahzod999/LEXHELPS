@@ -22,7 +22,7 @@
         "CFBundleAllowMixedLocalizations": true,
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["LexHelps"]
+            "CFBundleURLSchemes": ["com.cdlcarolinas.lex"]
           }
         ]
       }
@@ -113,7 +113,8 @@
           "iosClientId": "1076868398534-5j60979vc3md1hsqo0511pa75qm2eij6.apps.googleusercontent.com",
           "webClientId": "1076868398534-162b2goa1od6nbag2f82kl9vh1891ugn.apps.googleusercontent.com"
         }
-      ]
+      ],
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true

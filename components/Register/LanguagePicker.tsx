@@ -10,10 +10,11 @@ interface LanguagePickerProps {
   selectedLanguage?: string;
   onLanguageSelect: (lang: string) => void;
 }
-
+// языки тут
 const languages = [
   { code: "en", name: "English", flag: "🇬🇧" },
   { code: "es", name: "Español", flag: "🇪🇸" },
+  { code: "fa", name: "فارسی", flag: "🇮🇷" },
   { code: "fr", name: "Français", flag: "🇫🇷" },
   { code: "de", name: "Deutsch", flag: "🇩🇪" },
   { code: "it", name: "Italiano", flag: "🇮🇹" },

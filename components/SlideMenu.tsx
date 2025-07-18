@@ -46,11 +46,12 @@ export default function SlideMenu() {
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const { showError } = useToast();
-
+// языки тут
   const languages = [
     { code: "en", name: "🇬🇧 English" },
     { code: "ru", name: "🇷🇺 Русский" },
     { code: "es", name: "🇪🇸 Español" },
+    { code: "fa", name: "🇮🇷 فارسی" },
     { code: "fr", name: "🇫🇷 Français" },
     { code: "de", name: "🇩🇪 Deutsch" },
     { code: "it", name: "🇮🇹 Italiano" },

@@ -14,6 +14,17 @@ interface GoogleAuthCredentials {
   accessToken: string;
 }
 
+interface AppleAuthCredentials {
+  identityToken: string;
+  authorizationCode: string;
+  user?: {
+    name?: {
+      firstName?: string;
+      lastName?: string;
+    };
+  };
+}
+
 export const authApiSlice = apiSlice.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
@@ -72,6 +83,25 @@ export const authApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
+    appleAuth: builder.mutation<LoginResponseType, AppleAuthCredentials>({
+      query: (credentials) => ({
+        url: "/users/apple-auth",
+        method: "POST",
+        body: credentials,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log("Apple auth success:", data);
+
+          dispatch(setToken(data.token));
+          await saveTokenToSecureStore(data.token);
+        } catch (error) {
+          console.error("Error saving Apple auth token:", error);
+        }
+      },
+    }),
+
     getProfile: builder.query<ProfileResponseType, void>({
       query: () => ({
         url: "/users/profile",
@@ -126,6 +156,7 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useGoogleAuthMutation,
+  useAppleAuthMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
   useDeleteProfileMutation,

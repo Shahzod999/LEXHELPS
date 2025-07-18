@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Platform } from "react-native";
+import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import { useGoogleAuthMutation } from "@/redux/api/endpoints/authApiSlice";
+import * as AppleAuthentication from "expo-apple-authentication";
+import { useGoogleAuthMutation, useAppleAuthMutation } from "@/redux/api/endpoints/authApiSlice";
 import { useRouter } from "expo-router";
 import { useToast } from "@/context/ToastContext";
 import { useTranslation } from "react-i18next";
@@ -18,18 +19,36 @@ WebBrowser.maybeCompleteAuthSession();
 const LogRegOptions = () => {
   const { colors } = useTheme();
   const router = useRouter();
-  const [googleAuth, { isLoading }] = useGoogleAuthMutation();
+  // тут мы конфигурируем Google аутентификацию
+  const [googleAuth, { isLoading: isGoogleLoading }] = useGoogleAuthMutation();
+  // тут мы конфигурируем Apple аутентификацию
+  const [appleAuth, { isLoading: isAppleLoading }] = useAppleAuthMutation();
   const { showSuccess, showError } = useToast();
   const { t } = useTranslation();
 
+  // Проверяем доступность Apple аутентификации
+  const [isAppleAuthAvailable, setIsAppleAuthAvailable] = useState(false);
+
+  // тут мы проверяем доступность Apple аутентификации
+  useEffect(() => {
+    const checkAppleAuthAvailability = async () => {
+      const available = await AppleAuthentication.isAvailableAsync();
+      setIsAppleAuthAvailable(available);
+    };
+    checkAppleAuthAvailability();
+  }, []);
+
+  // тут мы конфигурируем Google аутентификацию
   const config = {
     clientId,
     iosClientId,
     webClientId,
   };
 
+  // тут мы конфигурируем Google аутентификацию
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
+  // тут мы обрабатываем Google аутентификацию
   const handleGoogleAuth = async () => {
     if (response?.type === "success") {
       const { authentication } = response;
@@ -54,6 +73,44 @@ const LogRegOptions = () => {
     }
   };
 
+  // тут мы обрабатываем Apple аутентификацию
+  const handleAppleAuth = async () => {
+    try {
+      // тут мы вызываем Apple аутентификацию
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [AppleAuthentication.AppleAuthenticationScope.FULL_NAME, AppleAuthentication.AppleAuthenticationScope.EMAIL],
+      });
+
+      // тут мы отправляем токены на сервер
+      if (credential.identityToken && credential.authorizationCode) {
+        const result = await appleAuth({
+          identityToken: credential.identityToken,
+          authorizationCode: credential.authorizationCode,
+          user: credential.fullName
+            ? {
+                name: {
+                  firstName: credential.fullName.givenName || undefined,
+                  lastName: credential.fullName.familyName || undefined,
+                },
+              }
+            : undefined,
+        }).unwrap();
+
+        console.log("Apple auth result:", result);
+        showSuccess(t("appleAuthSuccess", { ns: "auth" }));
+        router.replace("/(tabs)");
+      }
+    } catch (error: any) {
+      console.error("Apple auth error:", error);
+      if (error.code === "ERR_CANCELED") {
+        // Пользователь отменил аутентификацию
+        return;
+      }
+      showError(error?.data?.message || t("appleAuthError", { ns: "auth" }));
+    }
+  };
+
+  // тут мы обрабатываем Google аутентификацию
   useEffect(() => {
     if (response) {
       handleGoogleAuth();
@@ -65,13 +122,28 @@ const LogRegOptions = () => {
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           onPress={() => promptAsync()}
-          style={[styles.button, { backgroundColor: colors.darkBackground }, isLoading && styles.buttonDisabled]}
+          style={[styles.button, { backgroundColor: colors.darkBackground }, isGoogleLoading && styles.buttonDisabled]}
           activeOpacity={0.8}
-          disabled={isLoading}
+          disabled={isGoogleLoading}
         >
           <Ionicons name="logo-google" size={20} color="#3596ea" />
-          <Text style={[styles.buttonText, { color: colors.text }]}>{isLoading ? t("loading", { ns: "auth" }) : t("google", { ns: "auth" })}</Text>
+          <Text style={[styles.buttonText, { color: colors.text }]}>
+            {isGoogleLoading ? t("loading", { ns: "auth" }) : t("google", { ns: "auth" })}
+          </Text>
         </TouchableOpacity>
+        {Platform.OS === "ios" && isAppleAuthAvailable && (
+          <TouchableOpacity
+            onPress={() => handleAppleAuth()}
+            style={[styles.button, { backgroundColor: colors.darkBackground }, isAppleLoading && styles.buttonDisabled]}
+            activeOpacity={0.8}
+            disabled={isAppleLoading}
+          >
+            <Ionicons name="logo-apple" size={20} color="#3596ea" />
+            <Text style={[styles.buttonText, { color: colors.text }]}>
+              {isAppleLoading ? t("loading", { ns: "auth" }) : t("apple", { ns: "auth" })}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

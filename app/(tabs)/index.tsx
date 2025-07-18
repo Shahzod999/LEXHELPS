@@ -15,22 +15,15 @@ export default function HomeScreen() {
 
   return (
     <ThemedScreen>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
-        <Header
-          title={t('welcomeToLex')}
-          subtitle={t('notAloneJourney')}
-        />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+        <Header title={t("welcomeToLex")} subtitle={t("notAloneJourney")} />
         <Quotes />
 
-        <Text style={[styles.title, { color: colors.text }]}>
-          {t('howCanWeHelp')}
-        </Text>
+        <Text style={[styles.title, { color: colors.text }]}>{t("howCanWeHelp")}</Text>
 
         <HomeCard
-          title={t('uploadDocuments')}
-          description={t('uploadDocumentsDesc')}
+          title={t("uploadDocuments")}
+          description={t("uploadDocumentsDesc")}
           icon="cloud-upload-outline"
           color={colors.accent}
           onPress={() => {
@@ -38,8 +31,8 @@ export default function HomeScreen() {
           }}
         />
         <HomeCard
-          title={t('immigrationHelp')}
-          description={t('immigrationHelpDesc')}
+          title={t("immigrationHelp")}
+          description={t("immigrationHelpDesc")}
           icon="document-text"
           color={colors.accent}
           onPress={() => {
@@ -47,8 +40,8 @@ export default function HomeScreen() {
           }}
         />
         <HomeCard
-          title={t('askQuestion')}
-          description={t('askQuestionDesc')}
+          title={t("askQuestion")}
+          description={t("askQuestionDesc")}
           icon="chatbubble-outline"
           color={colors.success}
           onPress={() => {
@@ -56,8 +49,8 @@ export default function HomeScreen() {
           }}
         />
         <HomeCard
-          title={t('findResources')}
-          description={t('findResourcesDesc')}
+          title={t("findResources")}
+          description={t("findResourcesDesc")}
           icon="location-outline"
           color={colors.warning}
           onPress={() => {
@@ -65,7 +58,7 @@ export default function HomeScreen() {
           }}
         />
       </ScrollView>
-      <Emergency />
+      {/* <Emergency /> */}
     </ThemedScreen>
   );
 }

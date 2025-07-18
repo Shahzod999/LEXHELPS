@@ -1,6 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-
+// языки тут
 import arAuth from "./ar/auth.json";
 import arCommon from "./ar/common.json";
 import deAuth from "./de/auth.json";
@@ -9,6 +9,8 @@ import enAuth from "./en/auth.json";
 import enCommon from "./en/common.json";
 import esAuth from "./es/auth.json";
 import esCommon from "./es/common.json";
+import faAuth from "./fa/auth.json";
+import faCommon from "./fa/common.json";
 import frAuth from "./fr/auth.json";
 import frCommon from "./fr/common.json";
 import hiAuth from "./hi/auth.json";
@@ -36,6 +38,10 @@ const resources = {
   es: {
     auth: esAuth,
     common: esCommon,
+  },
+  fa: {
+    auth: faAuth,
+    common: faCommon,
   },
   ru: {
     auth: ruAuth,
