@@ -28,5 +28,6 @@
   "requestingCameraPermission": "कैमरा अनुमति का अनुरोध कर रहे हैं...",
   "cameraAccessRequired": "कैमरा एक्सेस आवश्यक",
   "cameraPermissionDeniedDescription": "दस्तावेज़ स्कैन करने के लिए, कृपया अपने डिवाइस सेटिंग्स में कैमरा एक्सेस की अनुमति दें।",
-  "goBack": "वापस जाएं"
+  "goBack": "वापस जाएं",
+  "theme": "थीम"
 } 

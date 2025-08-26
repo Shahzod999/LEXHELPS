@@ -7,15 +7,11 @@ type ThemedScreenProps = {
   style?: ViewStyle;
 };
 
-export const ThemedScreen: React.FC<ThemedScreenProps> = ({
-  children,
-  style,
-}) => {
+export const ThemedScreen: React.FC<ThemedScreenProps> = ({ children, style }) => {
   const { colors } = useTheme();
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: colors.background }, style]}>
+    <View style={[styles.container, { backgroundColor: colors.background }, style]}>
       <SafeAreaView style={styles.titleContainer}>{children}</SafeAreaView>
     </View>
   );

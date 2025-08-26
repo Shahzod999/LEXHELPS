@@ -4,10 +4,11 @@ export const formatDate = (date: string, locale: string = globalLocale) => {
   const dateObj = new Date(date);
   return dateObj.toLocaleString(locale, {
     year: "numeric",
-    month: "long",
+    month: "numeric",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: false,
   });
 };
 

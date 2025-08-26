@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ViewStyle, TextStyle, TouchableOpacity } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 
 type ThemedCardProps = {
@@ -17,13 +10,7 @@ type ThemedCardProps = {
   onPress?: () => void;
 };
 
-export const ThemedCard: React.FC<ThemedCardProps> = ({
-  children,
-  style,
-  title,
-  titleStyle,
-  onPress,
-}) => {
+export const ThemedCard: React.FC<ThemedCardProps> = ({ children, style, title, titleStyle, onPress }) => {
   const { colors, isDarkMode } = useTheme();
 
   const CardComponent = onPress ? TouchableOpacity : View;
@@ -40,12 +27,9 @@ export const ThemedCard: React.FC<ThemedCardProps> = ({
         style,
       ]}
       onPress={onPress}
-      activeOpacity={onPress ? 0.7 : 1}>
-      {title && (
-        <Text style={[styles.title, { color: colors.text }, titleStyle]}>
-          {title}
-        </Text>
-      )}
+      activeOpacity={onPress ? 0.7 : 1}
+    >
+      {title && <Text style={[styles.title, { color: colors.text }, titleStyle]}>{title}</Text>}
       {children}
     </CardComponent>
   );

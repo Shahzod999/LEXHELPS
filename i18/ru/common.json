@@ -28,5 +28,6 @@
   "requestingCameraPermission": "Запрос разрешения на камеру...",
   "cameraAccessRequired": "Требуется доступ к камере",
   "cameraPermissionDeniedDescription": "Для сканирования документов разрешите доступ к камере в настройках устройства.",
-  "goBack": "Назад"
+  "goBack": "Назад",
+  "theme": "Тема"
 } 

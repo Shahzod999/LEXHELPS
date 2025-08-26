@@ -37,7 +37,7 @@ export default function SlideMenu() {
 
   const dispatch = useAppDispatch();
   const { menuVisible, hideMenu } = useMenu();
-  const { isDarkMode, toggleTheme, colors } = useTheme();
+  const { isDarkMode, currentStyle, toggleTheme, setStyle, colors } = useTheme();
   // const [notifications, setNotifications] = useState(true);
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const [legalDropdownOpen, setLegalDropdownOpen] = useState(false);
@@ -46,7 +46,7 @@ export default function SlideMenu() {
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const { showError } = useToast();
-// языки тут
+  // языки тут
   const languages = [
     { code: "en", name: "🇬🇧 English" },
     { code: "ru", name: "🇷🇺 Русский" },
@@ -193,7 +193,7 @@ export default function SlideMenu() {
                 <Text style={[styles.sectionTitle, { color: colors.hint }]}>{t("preferences")}</Text>
 
                 <View style={styles.menuItem}>
-                  <Ionicons name="moon-outline" size={22} color={colors.text} />
+                  <Ionicons name={isDarkMode ? "moon-outline" : "sunny-outline"} size={22} color={colors.text} />
                   <Text style={[styles.menuItemText, { color: colors.text }]}>{t("darkMode")}</Text>
                   <Switch
                     value={isDarkMode}
@@ -205,6 +205,55 @@ export default function SlideMenu() {
                     }}
                     thumbColor={isDarkMode ? colors.accent : "white"}
                   />
+                </View>
+
+                <View style={styles.section}>
+                  <View style={styles.themeButtonsContainer}>
+                    <TouchableOpacity
+                      style={[
+                        styles.themeButton,
+                        {
+                          backgroundColor: currentStyle === "modern" ? colors.accent : colors.border,
+                          borderColor: currentStyle === "modern" ? colors.accent : colors.border,
+                        },
+                      ]}
+                      onPress={() => setStyle("modern")}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="rocket-outline" size={18} color={currentStyle === "modern" ? "white" : colors.text} />
+                      <Text style={[styles.themeButtonText, { color: currentStyle === "modern" ? "white" : colors.text }]}>{t("M")}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.themeButton,
+                        {
+                          backgroundColor: currentStyle === "normal" ? colors.accent : colors.border,
+                          borderColor: currentStyle === "normal" ? colors.accent : colors.border,
+                        },
+                      ]}
+                      onPress={() => setStyle("normal")}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="brush-outline" size={18} color={currentStyle === "normal" ? "white" : colors.text} />
+                      <Text style={[styles.themeButtonText, { color: currentStyle === "normal" ? "white" : colors.text }]}>{t("N")}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.themeButton,
+                        {
+                          backgroundColor: currentStyle === "elegant" ? colors.accent : colors.border,
+                          borderColor: currentStyle === "elegant" ? colors.accent : colors.border,
+                        },
+                      ]}
+                      onPress={() => setStyle("elegant")}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="sparkles-outline" size={18} color={currentStyle === "elegant" ? "white" : colors.text} />
+                      <Text style={[styles.themeButtonText, { color: currentStyle === "normal" ? "white" : colors.text }]}>{t("E")}</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
 
                 {/* <View style={styles.menuItem}>
@@ -392,6 +441,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom: 10,
     marginTop: 10,
+    textTransform: "uppercase",
   },
   menuItem: {
     flexDirection: "row",
@@ -432,6 +482,31 @@ const styles = StyleSheet.create({
   selectedItemText: {
     color: "#1976D2",
     fontWeight: "500",
+  },
+  themeButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginTop: 8,
+    gap: 8,
+  },
+  themeButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: 6,
+  },
+  themeButtonText: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  darkModeToggle: {
+    marginTop: 8,
   },
   logoutButton: {
     backgroundColor: "#F44336",

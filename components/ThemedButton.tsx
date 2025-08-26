@@ -1,16 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  ViewStyle
-} from 'react-native';
-import { useTheme } from '../context/ThemeContext';
+import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { ActivityIndicator, Platform, StyleSheet, Text, TextStyle, TouchableOpacity, Vibration, ViewStyle } from "react-native";
+import { useTheme } from "../context/ThemeContext";
+import * as Haptics from "expo-haptics";
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 
 type ThemedButtonProps = {
   title: string;
@@ -21,7 +15,7 @@ type ThemedButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   icon?: string;
-  iconPosition?: 'left' | 'right';
+  iconPosition?: "left" | "right";
 };
 
 const ThemedButton: React.FC<ThemedButtonProps> = ({
@@ -29,38 +23,38 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   onPress,
   style,
   textStyle,
-  variant = 'primary',
+  variant = "primary",
   disabled = false,
   loading = false,
   icon,
-  iconPosition = 'left'
+  iconPosition = "left",
 }) => {
   const { colors, isDarkMode } = useTheme();
 
   const getButtonStyles = (): ViewStyle => {
     switch (variant) {
-      case 'primary':
+      case "primary":
         return {
           backgroundColor: colors.accent,
           borderColor: colors.accent,
         };
-      case 'secondary':
+      case "secondary":
         return {
-          backgroundColor: isDarkMode ? '#444444' : '#E0E0E0',
-          borderColor: isDarkMode ? '#444444' : '#E0E0E0',
+          backgroundColor: isDarkMode ? "#444444" : "#E0E0E0",
+          borderColor: isDarkMode ? "#444444" : "#E0E0E0",
         };
-      case 'outline':
+      case "outline":
         return {
-          backgroundColor: 'transparent',
+          backgroundColor: "transparent",
           borderColor: colors.accent,
           borderWidth: 1,
         };
-      case 'ghost':
+      case "ghost":
         return {
-          backgroundColor: 'transparent',
-          borderColor: 'transparent',
+          backgroundColor: "transparent",
+          borderColor: "transparent",
         };
-      case 'danger':
+      case "danger":
         return {
           backgroundColor: colors.error,
           borderColor: colors.error,
@@ -75,25 +69,48 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
 
   const getTextStyles = (): TextStyle => {
     switch (variant) {
-      case 'primary':
+      case "primary":
         return {
-          color: 'white',
+          color: "white",
         };
-      case 'secondary':
+      case "secondary":
         return {
-          color: isDarkMode ? 'white' : '#333333',
+          color: isDarkMode ? "white" : "#333333",
         };
-      case 'outline':
-      case 'ghost':
+      case "outline":
+      case "ghost":
         return {
           color: colors.accent,
         };
       default:
         return {
-          color: 'white',
+          color: "white",
         };
     }
   };
+
+  const handlePress = () => {
+    if (Platform.OS === "ios") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    } else {
+      Vibration.vibrate(50);
+    }
+    onPress();
+  };
+
+  const renderButtonContent = () => (
+    <>
+      {loading ? (
+        <ActivityIndicator color={variant === "outline" || variant === "ghost" ? colors.accent : "white"} size="small" />
+      ) : (
+        <>
+          {icon && iconPosition === "left" && <Ionicons name={icon as any} size={18} color={getTextStyles().color} style={styles.leftIcon} />}
+          <Text style={[styles.buttonText, getTextStyles(), textStyle]}>{title}</Text>
+          {icon && iconPosition === "right" && <Ionicons name={icon as any} size={18} color={getTextStyles().color} style={styles.rightIcon} />}
+        </>
+      )}
+    </>
+  );
 
   return (
     <TouchableOpacity
@@ -101,41 +118,14 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
         styles.button,
         getButtonStyles(),
         disabled && styles.disabledButton,
-        disabled && { backgroundColor: isDarkMode ? '#333333' : '#D1D1D1' },
+        disabled && { backgroundColor: isDarkMode ? "#333333" : "#D1D1D1" },
         style,
       ]}
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled || loading}
       activeOpacity={0.7}
     >
-      {loading ? (
-        <ActivityIndicator 
-          color={variant === 'outline' || variant === 'ghost' ? colors.accent : 'white'} 
-          size="small" 
-        />
-      ) : (
-        <>
-          {icon && iconPosition === 'left' && (
-            <Ionicons 
-              name={icon as any} 
-              size={18} 
-              color={getTextStyles().color} 
-              style={styles.leftIcon} 
-            />
-          )}
-          <Text style={[styles.buttonText, getTextStyles(), textStyle]}>
-            {title}
-          </Text>
-          {icon && iconPosition === 'right' && (
-            <Ionicons 
-              name={icon as any} 
-              size={18} 
-              color={getTextStyles().color} 
-              style={styles.rightIcon} 
-            />
-          )}
-        </>
-      )}
+      {renderButtonContent()}
     </TouchableOpacity>
   );
 };
@@ -145,15 +135,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     minHeight: 48,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontWeight: "600",
+    textAlign: "center",
   },
   disabledButton: {
     opacity: 0.6,
@@ -166,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ThemedButton; 
+export default ThemedButton;

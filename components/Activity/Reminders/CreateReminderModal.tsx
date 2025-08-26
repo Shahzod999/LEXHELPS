@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useCreateReminderMutation } from "@/redux/api/endpoints/reminderApi";
 import { useToast } from "@/context/ToastContext";
 import { formatDayMonthYear } from "@/utils/formatDate";
+import { useTranslation } from "react-i18next";
 
 interface CreateReminderModalProps {
   visible: boolean;
@@ -16,6 +17,7 @@ interface CreateReminderModalProps {
 const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onClose }) => {
   const { colors } = useTheme();
   const { showSuccess, showError } = useToast();
+  const { t } = useTranslation();
   const [createReminder, { isLoading }] = useCreateReminderMutation();
   const descriptionRef = useRef<TextInput>(null);
 
@@ -47,7 +49,7 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onCl
 
   const handleSubmit = async () => {
     if (!formData.title.trim() || !formData.description.trim()) {
-      showError("Пожалуйста, заполните все поля");
+      showError(t("fillAllFields"));
       return;
     }
 
@@ -59,10 +61,10 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onCl
         schedule: formData.schedule.toISOString(),
       }).unwrap();
 
-      showSuccess("Напоминание успешно создано");
+      showSuccess(t("reminderCreatedSuccess"));
       handleClose();
     } catch (error) {
-      showError("Ошибка при создании напоминания");
+      showError(t("reminderCreateError"));
     }
   };
 
@@ -115,10 +117,10 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onCl
     >
       <View style={styles.form}>
         <View style={styles.formGroup}>
-          <Text style={[styles.label, { color: colors.text }]}>Название</Text>
+          <Text style={[styles.label, { color: colors.text }]}>{t("reminderTitle")}</Text>
           <TextInput
             style={[styles.input, { backgroundColor: colors.card, color: colors.text }]}
-            placeholder="Введите название напоминания"
+            placeholder={t("reminderTitlePlaceholder")}
             placeholderTextColor={colors.hint}
             value={formData.title}
             returnKeyType="next"
@@ -128,11 +130,11 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onCl
         </View>
 
         <View style={styles.formGroup}>
-          <Text style={[styles.label, { color: colors.text }]}>Описание</Text>
+          <Text style={[styles.label, { color: colors.text }]}>{t("reminderDescription")}</Text>
           <TextInput
             ref={descriptionRef}
             style={[styles.input, styles.textArea, { backgroundColor: colors.card, color: colors.text }]}
-            placeholder="Введите описание"
+            placeholder={t("reminderDescPlaceholder")}
             placeholderTextColor={colors.hint}
             value={formData.description}
             onChangeText={(text) => setFormData((prev) => ({ ...prev, description: text }))}
@@ -143,7 +145,7 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onCl
         </View>
 
         <View style={styles.formGroup}>
-          <Text style={[styles.label, { color: colors.text }]}>Запланировано на</Text>
+          <Text style={[styles.label, { color: colors.text }]}>{t("scheduledFor")}</Text>
           <TouchableOpacity
             style={[styles.input, styles.dateButton, { backgroundColor: colors.card }]}
             onPress={() => {
@@ -157,7 +159,7 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onCl
         </View>
 
         <View style={styles.formGroup}>
-          <Text style={[styles.label, { color: colors.text }]}>Последний срок</Text>
+          <Text style={[styles.label, { color: colors.text }]}>{t("deadline")}</Text>
           <TouchableOpacity
             style={[styles.input, styles.dateButton, { backgroundColor: colors.card }]}
             onPress={() => {
@@ -176,7 +178,7 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onCl
           visible={showSchedulePicker}
           onClose={() => setShowSchedulePicker(false)}
           onConfirm={confirmSchedule}
-          title="Выберите дату и время"
+          title={t("selectDateTime")}
         >
           <DateTimePicker value={tempSchedule} mode="date" display="spinner" onChange={handleScheduleChange} style={styles.datePicker} />
         </BottomModal>
@@ -186,7 +188,7 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ visible, onCl
 
       {/* Deadline Date Picker */}
       {Platform.OS === "ios" ? (
-        <BottomModal visible={showDeadlinePicker} onClose={() => setShowDeadlinePicker(false)} onConfirm={confirmDeadline} title="Выберите дату">
+        <BottomModal visible={showDeadlinePicker} onClose={() => setShowDeadlinePicker(false)} onConfirm={confirmDeadline} title={t("selectDate")}>
           <DateTimePicker value={tempDeadline} mode="date" display="spinner" onChange={handleDeadlineChange} style={styles.datePicker} />
         </BottomModal>
       ) : (

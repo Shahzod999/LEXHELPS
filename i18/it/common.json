@@ -28,5 +28,6 @@
   "requestingCameraPermission": "Richiesta autorizzazione fotocamera...",
   "cameraAccessRequired": "Accesso alla Fotocamera Richiesto",
   "cameraPermissionDeniedDescription": "Per scansionare i documenti, consenti l'accesso alla fotocamera nelle impostazioni del dispositivo.",
-  "goBack": "Indietro"
+  "goBack": "Indietro",
+  "theme": "Tema"
 } 

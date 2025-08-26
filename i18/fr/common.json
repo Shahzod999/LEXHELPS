@@ -28,5 +28,6 @@
   "requestingCameraPermission": "Demande d'autorisation de caméra...",
   "cameraAccessRequired": "Accès à la Caméra Requis",
   "cameraPermissionDeniedDescription": "Pour scanner les documents, veuillez autoriser l'accès à la caméra dans les paramètres de votre appareil.",
-  "goBack": "Retour"
+  "goBack": "Retour",
+  "theme": "Thème"
 } 

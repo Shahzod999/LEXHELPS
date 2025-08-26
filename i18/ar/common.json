@@ -28,5 +28,6 @@
   "requestingCameraPermission": "طلب إذن الكاميرا...",
   "cameraAccessRequired": "الوصول للكاميرا مطلوب",
   "cameraPermissionDeniedDescription": "لمسح الوثائق، يرجى السماح بالوصول للكاميرا في إعدادات جهازك.",
-  "goBack": "العودة"
+  "goBack": "العودة",
+  "theme": "السمة"
 } 

@@ -28,5 +28,8 @@
   "requestingCameraPermission": "Kamera ruxsati so'ralmoqda...",
   "cameraAccessRequired": "Kamera ruxsati kerak",
   "cameraPermissionDeniedDescription": "Hujjatlarni skanerlash uchun qurilma sozlamalarida kamera ruxsatini bering.",
-  "goBack": "Orqaga"
+  "goBack": "Orqaga",
+  "theme": "Tema",
+  "community": "Jamiyat",
+  "communityDesc": "Mashakkerlar bilan aloqa qiling va tajribalaringizni ulashing"
 } 

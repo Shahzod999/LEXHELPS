@@ -28,5 +28,6 @@
   "requestingCameraPermission": "カメラ権限を要求中...",
   "cameraAccessRequired": "カメラアクセスが必要",
   "cameraPermissionDeniedDescription": "文書をスキャンするには、デバイス設定でカメラアクセスを許可してください。",
-  "goBack": "戻る"
+  "goBack": "戻る",
+  "theme": "テーマ"
 } 

@@ -28,5 +28,7 @@
   "requestingCameraPermission": "正在请求相机权限...",
   "cameraAccessRequired": "需要相机访问权限",
   "cameraPermissionDeniedDescription": "要扫描文档，请在设备设置中允许相机访问。",
-  "goBack": "返回"
+  "goBack": "返回",
+  "theme": "主题"
+  
 } 

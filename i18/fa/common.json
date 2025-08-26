@@ -28,5 +28,6 @@
   "requestingCameraPermission": "درخواست مجوز دوربین...",
   "cameraAccessRequired": "دسترسی به دوربین ضروری است",
   "cameraPermissionDeniedDescription": "برای اسکن اسناد، لطفاً دسترسی دوربین را در تنظیمات دستگاه خود اجازه دهید.",
-  "goBack": "بازگشت"
+  "goBack": "بازگشت",
+  "theme": "تم"
 } 

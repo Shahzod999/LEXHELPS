@@ -4,6 +4,7 @@ import ThemedCard from "@/components/ThemedCard";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
 import { formatDate } from "@/utils/formatDate";
+import { useTranslation } from "react-i18next";
 
 const Reminders = ({
   title,
@@ -19,6 +20,7 @@ const Reminders = ({
   deadline?: string;
 }) => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   return (
     <ThemedCard>
       <View style={styles.header}>
@@ -33,15 +35,15 @@ const Reminders = ({
       {scheduledDate && (
         <View style={styles.deadlineContainer}>
           <Ionicons name="time-outline" size={18} color={colors.hint} />
-          <Text style={{ color: colors.hint }}>Scheduled for: </Text>
-          <Text style={{ color: colors.hint }}>{formatDate(scheduledDate)}</Text>
+          <Text style={{ color: colors.hint }}>{t("scheduledFor")}: </Text>
+          <Text style={[styles.deadline, { color: colors.hint }]}>{formatDate(scheduledDate)}</Text>
         </View>
       )}
       {deadline && (
         <View style={styles.deadlineContainer}>
           <Ionicons name="calendar-outline" size={18} color={colors.hint} />
-          <Text style={{ color: colors.hint }}>Deadline: </Text>
-          <Text style={{ color: colors.hint }}>{formatDate(deadline)}</Text>
+          <Text style={{ color: colors.hint }}>{t("deadline")}: </Text>
+          <Text style={[styles.deadline, { color: colors.hint }]}>{formatDate(deadline)}</Text>
         </View>
       )}
     </ThemedCard>
@@ -67,8 +69,13 @@ const styles = StyleSheet.create({
 
   deadlineContainer: {
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
     gap: 10,
     marginTop: 10,
+  },
+  deadline: {
+    textAlign: "right",
+    width: "100%",
   },
 });

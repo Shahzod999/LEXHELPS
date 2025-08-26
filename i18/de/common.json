@@ -28,5 +28,6 @@
   "requestingCameraPermission": "Kamera-Berechtigung wird angefordert...",
   "cameraAccessRequired": "Kamera-Zugriff Erforderlich",
   "cameraPermissionDeniedDescription": "Um Dokumente zu scannen, erlauben Sie bitte den Kamera-Zugriff in Ihren Geräteeinstellungen.",
-  "goBack": "Zurück"
+  "goBack": "Zurück",
+  "theme": "Thema"
 } 

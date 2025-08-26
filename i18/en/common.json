@@ -28,5 +28,6 @@
   "requestingCameraPermission": "Requesting camera permission...",
   "cameraAccessRequired": "Camera Access Required",
   "cameraPermissionDeniedDescription": "To scan documents, please allow camera access in your device settings.",
-  "goBack": "Go Back"
+  "goBack": "Go Back",
+  "theme": "Theme"
 } 

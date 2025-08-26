@@ -1,11 +1,10 @@
 import Header from "@/components/Card/Header";
 import HomeCard from "@/components/Card/HomeCard";
-import Emergency from "@/components/Home/Emergency";
 import Quotes from "@/components/Quotes";
 import { useTheme } from "@/context/ThemeContext";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import ThemedScreen from "../../components/ThemedScreen";
 
 export default function HomeScreen() {
@@ -14,13 +13,14 @@ export default function HomeScreen() {
   const router = useRouter();
 
   return (
-    <ThemedScreen>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content} style={{ backgroundColor: colors.background }}>
+      <ThemedScreen>
         <Header title={t("welcomeToLex")} subtitle={t("notAloneJourney")} />
         <Quotes />
 
         <Text style={[styles.title, { color: colors.text }]}>{t("howCanWeHelp")}</Text>
-
+      </ThemedScreen>
+      <View style={{ paddingHorizontal: 16 }}>
         <HomeCard
           title={t("uploadDocuments")}
           description={t("uploadDocumentsDesc")}
@@ -30,15 +30,19 @@ export default function HomeScreen() {
             router.push("/scan");
           }}
         />
+      </View>
+      <View style={{ paddingHorizontal: 16 }}>
         <HomeCard
-          title={t("immigrationHelp")}
-          description={t("immigrationHelpDesc")}
-          icon="document-text"
+          title={t("community")}
+          description={t("communityDesc")}
+          icon="earth-outline"
           color={colors.accent}
           onPress={() => {
-            router.push("/immigration");
+            router.push("/community");
           }}
         />
+      </View>
+      <View style={{ paddingHorizontal: 16 }}>
         <HomeCard
           title={t("askQuestion")}
           description={t("askQuestionDesc")}
@@ -48,6 +52,8 @@ export default function HomeScreen() {
             router.push("/chat");
           }}
         />
+      </View>
+      <View style={{ paddingHorizontal: 16 }}>
         <HomeCard
           title={t("findResources")}
           description={t("findResourcesDesc")}
@@ -57,9 +63,8 @@ export default function HomeScreen() {
             router.push("/resources");
           }}
         />
-      </ScrollView>
-      {/* <Emergency /> */}
-    </ThemedScreen>
+      </View>
+    </ScrollView>
   );
 }
 
