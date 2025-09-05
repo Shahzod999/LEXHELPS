@@ -2,6 +2,8 @@ import CameraView from "@/components/Camera/CameraView";
 import Header from "@/components/Card/Header";
 import HomeCard from "@/components/Card/HomeCard";
 import { Loading } from "@/components/common/LoadingScreen";
+import Keyboard from "@/components/Keyboard";
+import ThemedScreen from "@/components/ThemedScreen";
 import ToggleTabsRN from "@/components/ToggleTabs/ToggleTabsRN";
 import { useChat, useChatById } from "@/context/ChatContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -390,183 +392,174 @@ const ScanScreen = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <ThemedScreen>
       {isDeleting && <Loading />}
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView 
-          ref={scrollViewRef}
-          contentContainerStyle={styles.chatContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <Header title={t("documentScanner")} subtitle={t("scanAnalyzeDocuments")} />
+      <ScrollView ref={scrollViewRef} contentContainerStyle={styles.chatContent} showsVerticalScrollIndicator={false}>
+        <Header title={t("documentScanner")} subtitle={t("scanAnalyzeDocuments")} />
 
-          <View style={styles.scanCard}>
-            <ToggleTabsRN tabs={tabs} onTabChange={setActiveTab} />
+        <View style={styles.scanCard}>
+          <ToggleTabsRN tabs={tabs} onTabChange={setActiveTab} />
 
-            {scannedDocuments.length === 0 ? (
-              <Pressable onPress={activeTab === "1" ? handleScan : handleUpload}>
-                {({ pressed }) => (
-                  <View style={[styles.scanCardContent, pressed && styles.scanCardContentPressed, { borderColor: colors.accent }]}>
-                    <HomeCard
-                      title={activeTab === "1" ? t("clickToScanDocument") : t("clickToUploadDocument")}
-                      description={t("uploadClearPhotos")}
-                      icon={activeTab === "1" ? "camera-outline" : "cloud-upload-outline"}
-                      color={colors.accent}
-                    />
-                  </View>
-                )}
-              </Pressable>
-            ) : (
-              <View style={[styles.scanCardContent, { borderColor: colors.accent }]}>
-                <View style={styles.documentsHeader}>
-                  <Text style={[styles.documentsTitle, { color: colors.text }]}>
-                    {t("documents")} ({scannedDocuments.length})
-                  </Text>
-                  <View style={styles.headerButtons}>
-                    <TouchableOpacity
-                      style={[styles.addButton, { backgroundColor: colors.accent }]}
-                      onPress={activeTab === "1" ? handleScan : handleUpload}
-                      disabled={isUploading || isDeleting}
-                    >
-                      <Ionicons name="add" size={20} color="white" />
-                    </TouchableOpacity>
-                  </View>
+          {scannedDocuments.length === 0 ? (
+            <Pressable onPress={activeTab === "1" ? handleScan : handleUpload}>
+              {({ pressed }) => (
+                <View style={[styles.scanCardContent, pressed && styles.scanCardContentPressed, { borderColor: colors.accent }]}>
+                  <HomeCard
+                    title={activeTab === "1" ? t("clickToScanDocument") : t("clickToUploadDocument")}
+                    description={t("uploadClearPhotos")}
+                    icon={activeTab === "1" ? "camera-outline" : "cloud-upload-outline"}
+                    color={colors.accent}
+                  />
                 </View>
-
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.documentsScroll}>
-                  {scannedDocuments.map((document) => (
-                    <View key={document.id} style={styles.documentItem}>
-                      {document.type.includes("image") ? (
-                        <Image source={{ uri: document.uri }} style={styles.documentThumbnail} />
-                      ) : (
-                        <View style={[styles.documentIconThumbnail, { backgroundColor: colors.accent + "20" }]}>
-                          <Ionicons name={getDocumentIcon(document.type)} size={40} color={colors.accent} />
-                        </View>
-                      )}
-                      <Text style={[styles.documentItemName, { color: colors.text }]} numberOfLines={2}>
-                        {document.name || getDocumentTypeName(document.type)}
-                      </Text>
-                      <TouchableOpacity style={styles.deleteDocumentButton} onPress={() => handleDeleteDocument(document)}>
-                        <Ionicons name="close-circle" size={25} color={colors.warning} />
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </ScrollView>
-
-                <View style={styles.actionButtons}>
+              )}
+            </Pressable>
+          ) : (
+            <View style={[styles.scanCardContent, { borderColor: colors.accent }]}>
+              <View style={styles.documentsHeader}>
+                <Text style={[styles.documentsTitle, { color: colors.text }]}>
+                  {t("documents")} ({scannedDocuments.length})
+                </Text>
+                <View style={styles.headerButtons}>
                   <TouchableOpacity
+                    style={[styles.addButton, { backgroundColor: colors.accent }]}
+                    onPress={activeTab === "1" ? handleScan : handleUpload}
                     disabled={isUploading || isDeleting}
-                    style={[styles.actionButton, { backgroundColor: colors.warning + "20" }]}
-                    onPress={handleDeleteAllDocuments}
                   >
-                    <Text style={[styles.actionButtonText, { color: colors.warning }]}>{t("deleteAll")}</Text>
+                    <Ionicons name="add" size={20} color="white" />
                   </TouchableOpacity>
-                  {!isAnalyzed ? (
-                    <TouchableOpacity
-                      style={[styles.actionButton, { backgroundColor: colors.accent }]}
-                      onPress={handleAnalyzeDocuments}
-                      disabled={isUploading}
-                    >
-                      <Text style={[styles.actionButtonText, { color: "white" }]}>{isUploading ? t("analyzing") : t("analyze")}</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity style={[styles.actionButton, { backgroundColor: colors.success + "20" }]} onPress={handleSaveDocuments}>
-                      <Text style={[styles.actionButtonText, { color: colors.success }]}>{t("continue")}</Text>
-                    </TouchableOpacity>
-                  )}
                 </View>
               </View>
-            )}
 
-            {/* Connection Status */}
-            {scannedDocuments.length > 0 && isAnalyzed && documentChatId && (
-              <View style={styles.statusContainer}>
-                <View
-                  style={[
-                    styles.statusIndicator,
-                    {
-                      backgroundColor: getConnectionColor(),
-                    },
-                  ]}
-                />
-                <Text style={[styles.statusText, { color: colors.text }]}>{getConnectionStatus()}</Text>
-              </View>
-            )}
-
-            {/* Upload Progress */}
-            {isUploading && uploadProgress && (
-              <View style={[styles.progressContainer, { backgroundColor: colors.card }]}>
-                <Text style={[styles.progressText, { color: colors.accent }]}>{uploadProgress}</Text>
-              </View>
-            )}
-
-            {/* Chat Messages */}
-            {scannedDocuments.length > 0 && documentChatId && isConnected && documentChat.isSubscribed && isAnalyzed && (
-              <View style={styles.chatContainer}>
-                <View style={styles.messagesContainer}>
-                  {displayMessages.map((message, index) => (
-                    <View key={message.messageId || index} style={[styles.messageWrapper, message.role === "user" && styles.userMessageWrapper]}>
-                      <View
-                        style={[
-                          styles.messageBubble,
-                          { backgroundColor: colors.card },
-                          message.role === "user" && {
-                            backgroundColor: colors.userAccent,
-                          },
-                        ]}
-                      >
-                        <Text style={[styles.messageText, { color: colors.text }]}>{message.content}</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.documentsScroll}>
+                {scannedDocuments.map((document) => (
+                  <View key={document.id} style={styles.documentItem}>
+                    {document.type.includes("image") ? (
+                      <Image source={{ uri: document.uri }} style={styles.documentThumbnail} />
+                    ) : (
+                      <View style={[styles.documentIconThumbnail, { backgroundColor: colors.accent + "20" }]}>
+                        <Ionicons name={getDocumentIcon(document.type)} size={40} color={colors.accent} />
                       </View>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            )}
-          </View>
-        </ScrollView>
+                    )}
+                    <Text style={[styles.documentItemName, { color: colors.text }]} numberOfLines={2}>
+                      {document.name || getDocumentTypeName(document.type)}
+                    </Text>
+                    <TouchableOpacity style={styles.deleteDocumentButton} onPress={() => handleDeleteDocument(document)}>
+                      <Ionicons name="close-circle" size={25} color={colors.warning} />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
 
-        {/* Input for additional questions */}
-        {scannedDocuments.length > 0 && documentChatId && isConnected && !isUploading && documentChat.isSubscribed && isAnalyzed && (
-          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.inputContainer}>
-            <View style={[styles.inputWrapper, { backgroundColor: colors.background }]}>
-              <TextInput
-                style={[styles.input, { color: colors.text }]}
-                placeholder={t("askQuestionsAboutDocuments")}
-                placeholderTextColor={colors.hint}
-                value={inputText}
-                onChangeText={setInputText}
-                multiline
-              />
-              <TouchableOpacity
-                style={styles.sendButton}
-                onPress={handleSendMessage}
-                disabled={inputText.trim() === "" || !isConnected || !documentChat.isSubscribed || !documentChatId}
-              >
-                <Ionicons
-                  name="send"
-                  size={20}
-                  color={inputText.trim() && isConnected && documentChat.isSubscribed && documentChatId ? colors.accent : colors.hint}
-                />
-              </TouchableOpacity>
+              <View style={styles.actionButtons}>
+                <TouchableOpacity
+                  disabled={isUploading || isDeleting}
+                  style={[styles.actionButton, { backgroundColor: colors.warning + "20" }]}
+                  onPress={handleDeleteAllDocuments}
+                >
+                  <Text style={[styles.actionButtonText, { color: colors.warning }]}>{t("deleteAll")}</Text>
+                </TouchableOpacity>
+                {!isAnalyzed ? (
+                  <TouchableOpacity
+                    style={[styles.actionButton, { backgroundColor: colors.accent }]}
+                    onPress={handleAnalyzeDocuments}
+                    disabled={isUploading}
+                  >
+                    <Text style={[styles.actionButtonText, { color: "white" }]}>{isUploading ? t("analyzing") : t("analyze")}</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={[styles.actionButton, { backgroundColor: colors.success + "20" }]} onPress={handleSaveDocuments}>
+                    <Text style={[styles.actionButtonText, { color: colors.success }]}>{t("continue")}</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
-          </KeyboardAvoidingView>
-        )}
-      </SafeAreaView>
-    </View>
+          )}
+
+          {/* Connection Status */}
+          {scannedDocuments.length > 0 && isAnalyzed && documentChatId && (
+            <View style={styles.statusContainer}>
+              <View
+                style={[
+                  styles.statusIndicator,
+                  {
+                    backgroundColor: getConnectionColor(),
+                  },
+                ]}
+              />
+              <Text style={[styles.statusText, { color: colors.text }]}>{getConnectionStatus()}</Text>
+            </View>
+          )}
+
+          {/* Upload Progress */}
+          {isUploading && uploadProgress && (
+            <View style={[styles.progressContainer, { backgroundColor: colors.card }]}>
+              <Text style={[styles.progressText, { color: colors.accent }]}>{uploadProgress}</Text>
+            </View>
+          )}
+
+          {/* Chat Messages */}
+          {scannedDocuments.length > 0 && documentChatId && isConnected && documentChat.isSubscribed && isAnalyzed && (
+            <View style={styles.chatContainer}>
+              <View style={styles.messagesContainer}>
+                {displayMessages.map((message, index) => (
+                  <View key={message.messageId || index} style={[styles.messageWrapper, message.role === "user" && styles.userMessageWrapper]}>
+                    <View
+                      style={[
+                        styles.messageBubble,
+                        { backgroundColor: colors.card },
+                        message.role === "user" && {
+                          backgroundColor: colors.userAccent,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.messageText, { color: colors.text }]}>{message.content}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      {/* Input for additional questions */}
+      {scannedDocuments.length > 0 && documentChatId && isConnected && !isUploading && documentChat.isSubscribed && isAnalyzed && (
+        // <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.inputContainer}>
+        //   <View style={[styles.inputWrapper, { backgroundColor: colors.background }]}>
+        //     <TextInput
+        //       style={[styles.input, { color: colors.text }]}
+        //       placeholder={t("askQuestionsAboutDocuments")}
+        //       placeholderTextColor={colors.hint}
+        //       value={inputText}
+        //       onChangeText={setInputText}
+        //       multiline
+        //     />
+        //     <TouchableOpacity
+        //       style={styles.sendButton}
+        //       onPress={handleSendMessage}
+        //       disabled={inputText.trim() === "" || !isConnected || !documentChat.isSubscribed || !documentChatId}
+        //     >
+        //       <Ionicons
+        //         name="send"
+        //         size={20}
+        //         color={inputText.trim() && isConnected && documentChat.isSubscribed && documentChatId ? colors.accent : colors.hint}
+        //       />
+        //     </TouchableOpacity>
+        //   </View>
+        // </KeyboardAvoidingView>
+        <Keyboard placeholder={t("askQuestionsAboutDocuments")} value={inputText} onChange={setInputText} onSend={handleSendMessage} isConnected={isConnected} isSubscribed={documentChat.isSubscribed} documentChatId={documentChatId} />
+      )}
+    </ThemedScreen>
   );
 };
 
 export default ScanScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scanCard: {
     marginVertical: 16,
   },
   chatContent: {
-    paddingVertical: 16,
     paddingHorizontal: 16,
   },
   scanCardContent: {

@@ -16,14 +16,14 @@ interface TabsProps {
 
 const ToggleTabsRN: React.FC<TabsProps> = ({ tabs, onTabChange, setOrderType, activeTab: externalActiveTab }) => {
   const { colors } = useTheme();
-  const [internalActiveTab, setInternalActiveTab] = useState(tabs[0].id);
+  const [internalActiveTab, setInternalActiveTab] = useState(tabs?.[0]?.id);
   const activeTab = externalActiveTab !== undefined ? externalActiveTab : internalActiveTab;
   const [tabWidths, setTabWidths] = useState<{ [key: string]: number }>({});
   const [showDropdown, setShowDropdown] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
-  const visibleTabs = tabs.slice(0, 3);
-  const dropdownTabs = tabs.slice(3);
+  const visibleTabs = tabs.slice(0, 4);
+  const dropdownTabs = tabs.slice(4);
 
   const handleTabChange = (tab: TabsTypes) => {
     if (externalActiveTab === undefined) {
@@ -73,7 +73,7 @@ const ToggleTabsRN: React.FC<TabsProps> = ({ tabs, onTabChange, setOrderType, ac
   );
 
   return (
-    <View style={styles.tabsWrapper}>
+    <View style={[styles.tabsWrapper, { backgroundColor: colors.card }]}>
       <View style={styles.tabs}>
         {visibleTabs.map((tab) => (
           <TouchableOpacity
@@ -117,7 +117,6 @@ const ToggleTabsRN: React.FC<TabsProps> = ({ tabs, onTabChange, setOrderType, ac
 
 const styles = StyleSheet.create({
   tabsWrapper: {
-    backgroundColor: "rgba(120, 120, 120, 0.2)",
     padding: 2,
     borderRadius: 10,
     width: "100%",

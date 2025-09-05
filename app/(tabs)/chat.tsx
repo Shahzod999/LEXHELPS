@@ -1,5 +1,7 @@
 import Header from "@/components/Card/Header";
 import ChatHistoryMenu from "@/components/ChatHistoryMenu";
+import Keyboard from "@/components/Keyboard";
+import ThemedScreen from "@/components/ThemedScreen";
 import { useChat, useChatById } from "@/context/ChatContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useGetUserOneChatQuery } from "@/redux/api/endpoints/chatApiSlice";
@@ -164,85 +166,88 @@ const ChatScreen = () => {
   }, [finalMessages.length, selectedChat.streamingMessage, selectedChat.isTyping]);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <PanGestureHandler onHandlerStateChange={handleSwipeGesture}>
-          <ScrollView ref={scrollViewRef} contentContainerStyle={styles.chatContent} showsVerticalScrollIndicator={false}>
-            <Header title={t("askLexTitle")} subtitle={t("askLexSubtitle")} secondIcon="chatbubbles" secondIconFunction={handleChatHistoryToggle} />
+    <ThemedScreen>
+      <PanGestureHandler onHandlerStateChange={handleSwipeGesture}>
+        <ScrollView ref={scrollViewRef} contentContainerStyle={styles.chatContent} showsVerticalScrollIndicator={false}>
+          <Header title={t("askLexTitle")} subtitle={t("askLexSubtitle")} secondIcon="chatbubbles" secondIconFunction={handleChatHistoryToggle} />
 
-            {/* Connection Status Indicator */}
-            <View style={styles.statusContainer}>
-              <View style={[styles.statusIndicator, { backgroundColor: getConnectionColor() }]} />
-              <Text style={[styles.statusText, { color: colors.text }]}>{getConnectionStatus()}</Text>
-              {selectedChatId && (
-                <Text style={[styles.statusText, { color: colors.text, marginLeft: 8 }]}>
-                  • {t("chatLabel")} {selectedChatId.slice(-6)}
-                </Text>
-              )}
-            </View>
-
-            <View style={styles.chatContainer}>
-              {isLoadingChat ? (
-                <ActivityIndicator size="small" color={colors.accent} />
-              ) : (
-                finalMessages.map((message, index) => (
-                  <View
-                    key={message._id || message.messageId || index}
-                    style={[styles.messageWrapper, message.role === "user" && styles.userMessageWrapper]}
-                  >
-                    <View
-                      style={[
-                        styles.messageBubble,
-                        { backgroundColor: colors.card },
-                        message.role === "user" && {
-                          backgroundColor: colors.userAccent,
-                        },
-                        message.isTyping && { opacity: 0.7 },
-                      ]}
-                    >
-                      <Text style={[styles.messageText, { color: colors.text }]}>{message.content}</Text>
-                    </View>
-                  </View>
-                ))
-              )}
-            </View>
-          </ScrollView>
-        </PanGestureHandler>
-
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.inputContainer}>
-          <View style={[styles.inputWrapper, { backgroundColor: colors.background }]}>
-            <TextInput
-              style={[styles.input, { color: colors.text }]}
-              placeholder={t("chatPlaceholder")}
-              placeholderTextColor={colors.hint}
-              value={inputText}
-              onChangeText={setInputText}
-              multiline
-            />
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={handleSendMessage}
-              disabled={inputText.trim() === "" || !isConnected || !selectedChatId || !selectedChat.isSubscribed}
-            >
-              <Ionicons
-                name="send"
-                size={20}
-                color={inputText.trim() && isConnected && selectedChatId && selectedChat.isSubscribed ? colors.accent : colors.hint}
-              />
-            </TouchableOpacity>
+          {/* Connection Status Indicator */}
+          <View style={styles.statusContainer}>
+            <View style={[styles.statusIndicator, { backgroundColor: getConnectionColor() }]} />
+            <Text style={[styles.statusText, { color: colors.text }]}>{getConnectionStatus()}</Text>
+            {selectedChatId && (
+              <Text style={[styles.statusText, { color: colors.text, marginLeft: 8 }]}>
+                • {t("chatLabel")} {selectedChatId.slice(-6)}
+              </Text>
+            )}
           </View>
-        </KeyboardAvoidingView>
-        <ChatHistoryMenu visible={chatHistoryVisible} onClose={handleChatHistoryClose} onSelectChat={handleSelectChat} />
-      </SafeAreaView>
-    </View>
+
+          <View style={styles.chatContainer}>
+            {isLoadingChat ? (
+              <ActivityIndicator size="small" color={colors.accent} />
+            ) : (
+              finalMessages.map((message, index) => (
+                <View
+                  key={message._id || message.messageId || index}
+                  style={[styles.messageWrapper, message.role === "user" && styles.userMessageWrapper]}
+                >
+                  <View
+                    style={[
+                      styles.messageBubble,
+                      { backgroundColor: colors.card },
+                      message.role === "user" && {
+                        backgroundColor: colors.userAccent,
+                      },
+                      message.isTyping && { opacity: 0.7 },
+                    ]}
+                  >
+                    <Text style={[styles.messageText, { color: colors.text }]}>{message.content}</Text>
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+        </ScrollView>
+      </PanGestureHandler>
+
+      {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.inputContainer}>
+        <View style={[styles.inputWrapper, { backgroundColor: colors.background }]}>
+          <TextInput
+            style={[styles.input, { color: colors.text }]}
+            placeholder={t("chatPlaceholder")}
+            placeholderTextColor={colors.hint}
+            value={inputText}
+            onChangeText={setInputText}
+            multiline
+          />
+          <TouchableOpacity
+            style={styles.sendButton}
+            onPress={handleSendMessage}
+            disabled={inputText.trim() === "" || !isConnected || !selectedChatId || !selectedChat.isSubscribed}
+          >
+            <Ionicons
+              name="send"
+              size={20}
+              color={inputText.trim() && isConnected && selectedChatId && selectedChat.isSubscribed ? colors.accent : colors.hint}
+            />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView> */}
+      <Keyboard
+        placeholder={t("chatPlaceholder")}
+        value={inputText}
+        onChange={setInputText}
+        onSend={handleSendMessage}
+        isConnected={isConnected}
+        isSubscribed={selectedChat.isSubscribed}
+        documentChatId={selectedChatId}
+      />
+      <ChatHistoryMenu visible={chatHistoryVisible} onClose={handleChatHistoryClose} onSelectChat={handleSelectChat} />
+    </ThemedScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    overflow: "hidden",
-  },
   statusContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -265,7 +270,6 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   chatContent: {
-    paddingVertical: 16,
     paddingHorizontal: 16,
   },
   messageWrapper: {

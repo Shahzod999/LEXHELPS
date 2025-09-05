@@ -8,8 +8,8 @@ const Header = ({
   secondIcon,
   secondIconFunction,
 }: {
-  title: string;
-  subtitle: string;
+  title?: string;
+  subtitle?: string;
   secondIcon?: any;
   secondIconFunction?: () => void;
 }) => {
@@ -26,8 +26,8 @@ const Header = ({
           </TouchableOpacity>
         )}
       </View>
-      <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-      <Text style={[styles.subtitle, { color: colors.hint }]}>{subtitle}</Text>
+      {title && <Text style={[styles.title, { color: colors.text }]}>{title}</Text>}
+      {subtitle && <Text style={[styles.subtitle, { color: colors.hint }]}>{subtitle}</Text>}
     </View>
   );
 };

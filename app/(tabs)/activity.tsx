@@ -14,20 +14,15 @@ export default function ActivityScreen() {
   const [activeTab, setActiveTab] = useState<string>("1");
 
   const tabs = [
-    { id: "1", label: t('documentsTab'), type: "documents" },
-    { id: "2", label: t('newsTab'), type: "news" },
-    { id: "3", label: t('remindersTab'), type: "reminders" },
+    { id: "1", label: t("documentsTab"), type: "documents" },
+    { id: "2", label: t("newsTab"), type: "news" },
+    { id: "3", label: t("remindersTab"), type: "reminders" },
   ];
 
   return (
     <ThemedScreen>
-      <ScrollView
-        contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}>
-        <Header
-          title={t('yourActivity')}
-          subtitle={t('yourFilesNewsReminders')}
-        />
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        <Header title={t("yourActivity")} subtitle={t("yourFilesNewsReminders")} />
         <View style={styles.tabsContainer}>
           <ToggleTabsRN tabs={tabs} onTabChange={setActiveTab} />
         </View>
@@ -44,7 +39,7 @@ export default function ActivityScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
   tabsContainer: {
     marginVertical: 16,

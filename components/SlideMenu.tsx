@@ -376,6 +376,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: 0,
+    zIndex: 1001,
   },
   sidebar: {
     width: 300,
@@ -386,6 +387,8 @@ const styles = StyleSheet.create({
     elevation: 3,
     height: "100%",
     position: "absolute",
+    top: 0,
+    bottom: 0,
     right: 0,
     zIndex: 1000,
   },

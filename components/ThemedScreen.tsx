@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ViewStyle, SafeAreaView } from "react-native";
+import { View, StyleSheet, ViewStyle, SafeAreaView, Platform, StatusBar } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 
 type ThemedScreenProps = {
@@ -12,7 +12,16 @@ export const ThemedScreen: React.FC<ThemedScreenProps> = ({ children, style }) =
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }, style]}>
-      <SafeAreaView style={styles.titleContainer}>{children}</SafeAreaView>
+      <SafeAreaView
+        style={[
+          styles.titleContainer,
+          {
+            paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+          },
+        ]}
+      >
+        {children}
+      </SafeAreaView>
     </View>
   );
 };
@@ -20,7 +29,7 @@ export const ThemedScreen: React.FC<ThemedScreenProps> = ({ children, style }) =
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
   },
   titleContainer: {
     backgroundColor: "transparent",

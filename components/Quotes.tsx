@@ -63,7 +63,7 @@ const Quotes = () => {
   const currentQuote = quotes[currentQuoteIndex];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={styles.container}>
       <Animated.View
         style={[
           styles.quoteCard,
@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 8,
   },
   quoteText: {
     fontSize: 12,
